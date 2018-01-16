@@ -1,4 +1,6 @@
 # Deep Metric Learning
+
+Learn a deep metric which can be used image retrieval , clustering.
 ============================
 
 ## Pytorch Code for several deep metric learning papers:
@@ -10,7 +12,7 @@ https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metr
 
 - Batch-All-Loss and Batch-Hard-Loss in ["In Defense of Triplet Loss in ReID"](https://arxiv.org/abs/1703.07737)
 
-- New Positive Mining Loss based on Fussy Clustering 
+- New Positive Mining Loss based on Fuzzy Clustering 
 
    [SOTA on standard metric learning Datasets]
 
@@ -24,8 +26,7 @@ https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metr
 
 - [Stanford-Online](ftp://cs.stanford.edu/cs/cvgl/Stanford_Online_Products.zip)
   
-  for the experiments, we split 59,551 images of 11,318 classes for training and 60,502
-images of 11,316 classes for testing
+  for the experiments, we split 59,551 images of 11,318 classes for training and 60,502 images of 11,316 classes for testing
 
   After downloading all the three data file, you should precess them as above, and put the directionary named DataSet in the project.
   We provide a script to precess CUB( Deep_Metric/DataSet/split_dataset.py ). The other two are similar, you can modify the script by yourself.
