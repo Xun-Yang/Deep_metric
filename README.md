@@ -15,24 +15,37 @@ https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metr
    [SOTA on standard metric learning Datasets]
 
 ## Dataset
-- [Car-196](http://ai.stanford.edu/~jkrause/cars/car_dataset.html) 
+- [Car-196](http://ai.stanford.edu/~jkrause/cars/car_devkit.tgz)
 
    first 98 classes as train set and last 98 classes as test set
-- [CUB-200-2011](http://www.vision.caltech.edu/visipedia/CUB-200.html)
+- [CUB-200-2011](http://www.vision.caltech.edu/visipedia-data/CUB-200/images.tgz)
 
   first 98 classes as train set and last 98 classes as test set
+
   
-- [Stanford-Online] 
+- [Stanford-Online] (ftp://cs.stanford.edu/cs/cvgl/Stanford_Online_Products.zip)
   
   for the experiments, we split 59,551 images of 11,318 classes for training and 60,502
 images of 11,316 classes for testing
-  
+
+  After downloading all the three data file, you should precess them as above, and put the directionary named DataSet in the project.
+  We provide a script to precess CUB(in DataSet name split_data.py). The other two are similar, you can modify the script by yourself.
+
+
+## Pretrained models in Pytorch
+
+Inceptionn BN network as other metric learning papers do, to save your time, we already download them down and put on my Baidu YunPan.
+
+We also put inception v3 in the Baidu YunPan, the performance of inception v-3 is a little worse(about 1.5% on recall@1 ) than inception BN on CUB/Car datasets.
+
+The download site(https://pan.baidu.com/s/1snmKa1v)
+
 ## Prerequisites
 - Computer with Linux or OSX
 - [PyTorch](http://pytorch.org)
   
  # NOTE！！！
-  To exactly reproduce the result in my paper, please make sure to use the same version of pytorch with me: 0.2.3
+  To exactly reproduce the result in my paper, please make sure to use the same version of pytorch with me: !!! 0.2.0_3
   there are some problem for other version to load the pretrained model of inception-BN.
   
 - For training, an NVIDIA GPU is strongly recommended for speed. CPU is supported but training may be slow.

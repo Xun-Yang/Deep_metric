@@ -13,7 +13,6 @@ from utils import RandomIdentitySampler, mkdir_if_missing, logging
 import DataSet
 cudnn.benchmark = True
 
-
 parser = argparse.ArgumentParser(description='PyTorch Training')
 parser.add_argument('-data', default='car', required=True,
                     help='path to dataset')
@@ -32,16 +31,16 @@ parser.add_argument('-log_dir', default=None,
 parser.add_argument('-BatchSize', '-b', default=128, type=int, metavar='N',
                     help='mini-batch size (1 = pure stochastic) Default: 256')
 parser.add_argument('-num_instances', default=4, type=int, metavar='n',
-                    help='')
+                    help='the number of samples from one class in mini-batch')
+parser.add_argument('--embedding_dimension', '-dim', default=512, type=int, metavar='n',
+                    help='the dimension of embedding space')
+
 parser.add_argument('-epochs', '-epochs', default=100, type=int, metavar='N',
                     help='epochs for training process')
 parser.add_argument('-step', '-s', default=200, type=int, metavar='N',
                     help='number of epochs to save model')
 parser.add_argument('-save_step', default=40, type=int, metavar='N',
                     help='number of epochs to save model')
-
-
-
 # optimizer
 parser.add_argument('-lr', type=float, default=1e-4,
                     help="learning rate of new parameters, for pretrained "
@@ -61,16 +60,18 @@ mkdir_if_missing(log_dir)
 # write log
 sys.stdout = logging.Logger(os.path.join(log_dir, 'log.txt'))
 
-
+#  display information of current training
 print('train on dataset %s' % args.data)
 print('batchsize is: %d' % args.BatchSize)
 print('num_instance is %d' % args.num_instances)
+print('dimension of the embedding space is %d' % args.dim)
 print('log dir is: %s' % args.log_dir)
 
+#  load pretrained models
 if args.r is not None:
     model = torch.load(args.r)
 else:
-    model = models.create(args.net, Embed_dim=512)
+    model = models.create(args.net, Embed_dim=args.dim)
 
     # load part of the model
     model_dict = model.state_dict()
@@ -89,23 +90,17 @@ else:
     # torch.save(model, os.path.join(log_dir, 'model.pkl'))
 
 model = model.cuda()
-# print(model.parameters())
 
-# criterion = CenterTripletLoss().cuda()
 criterion = losses.create(args.loss).cuda()
 
 # fine tune the model: the learning rate for pretrained parameter is 1/10
 base_param_ids = set(map(id, model.Embed.parameters()))
-
-#if model.classify:
-#    base_param_ids = base_param_ids | set(map(id, model.logits_.parameters()))
 
 base_params = [p for p in model.parameters() if
                id(p) in base_param_ids]
 
 new_params = [p for p in model.parameters() if
               id(p) not in base_param_ids]
-# print(new_params)
 param_groups = [
             {'params': base_params, 'lr_mult': 0.1},
             {'params': new_params, 'lr_mult': 1.0}]
@@ -122,10 +117,10 @@ train_loader = torch.utils.data.DataLoader(
 
 
 def adjust_learning_rate(opt_, epoch_, num_epochs):
-    """Sets the learning rate to the initial LR decayed by 1000 at last 200 epochs"""
+    """Sets the learning rate to the initial LR decayed by 1000 at last epochs"""
     if epoch_ > (num_epochs - args.step):
         lr = args.lr * \
-             (0.001 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
+             (0.01 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
         for param_group in opt_.param_groups:
             param_group['lr'] = lr
 
@@ -139,7 +134,6 @@ for epoch in range(args.start, args.epochs):
         # wrap them in Variable
         inputs = Variable(inputs.cuda())
         labels = Variable(labels).cuda()
-        # inputs, labels = Variable(inputs).cuda(), Variable(labels).cuda()
 
         # zero the parameter gradients
         optimizer.zero_grad()
@@ -156,17 +150,8 @@ for epoch in range(args.start, args.epochs):
     # print(epoch)
     print('[epoch %05d]\t loss: %.7f \t prec: %.3f \t pos-dist: %.3f \tneg-dist: %.3f'
           % (epoch + 1,  running_loss, inter_, dist_ap, dist_an))
-    if epoch % args.save_step == 0:
+    if (epoch + 1) % args.save_step == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
-
-    # if epoch == 2000:
-    #     learn_rate /= 10
-    #     optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
-    #                                  weight_decay=args.weight_decay)
-    # if epoch == 3000:
-    #     learn_rate /= 10
-    #     optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
-    #                                  weight_decay=args.weight_decay)
 
 torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
