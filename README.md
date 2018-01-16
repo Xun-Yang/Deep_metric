@@ -1,9 +1,9 @@
 # Deep Metric Learning
 
-Learn a deep metric which can be used image retrieval , clustering.
+### Learn a deep metric which can be used image retrieval , clustering.
 ============================
 
-## Pytorch Code for several deep metric learning papers:
+## Pytorch Code for deep metric methods:
 
 - ["Lifted Structure Loss"](
 https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metric_Learning_CVPR_2016_paper.pdf)
