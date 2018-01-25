@@ -14,7 +14,7 @@ https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metr
 
 - New Positive Mining Loss based on Fuzzy Clustering 
 
-   [SOTA on standard metric learning Datasets]
+   [comparable results on standard metric learning Datasets]
 
 ## Dataset
 - [Car-196](http://ai.stanford.edu/~jkrause/cars/car_devkit.tgz)
