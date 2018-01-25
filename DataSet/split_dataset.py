@@ -13,15 +13,17 @@ for x in sets:
 
 paths = [os.path.join(root, x) for x in sets]
 
-train_idx = range(100)
-test_idx = range(100, 200)
 
-for i in range(200):
-    img_path = os.path.join(image_folder, dirs[i])
-    if i < 100:
-        shutil.move(img_path, paths[0])
-    else:
-        shutil.move(img_path, paths[1])
-
+for img in dirs:
+    if img[0] == '.':
+        print(img)
+    # img_path = os.path.join(image_folder, img)
+    # index = int((img.split('.')[-2][-3:]))
+    # print(index)
+    # if index < 101:
+    #     shutil.move(img_path, paths[0])
+    # else:
+    #     shutil.move(img_path, paths[1])
+    #
 
 

@@ -32,10 +32,10 @@ parser.add_argument('-BatchSize', '-b', default=128, type=int, metavar='N',
                     help='mini-batch size (1 = pure stochastic) Default: 256')
 parser.add_argument('-num_instances', default=4, type=int, metavar='n',
                     help='the number of samples from one class in mini-batch')
-parser.add_argument('--embedding_dimension', '-dim', default=512, type=int, metavar='n',
+parser.add_argument('-dim', default=512, type=int, metavar='n',
                     help='the dimension of embedding space')
 
-parser.add_argument('-epochs', '-epochs', default=100, type=int, metavar='N',
+parser.add_argument('-epochs', default=100, type=int, metavar='N',
                     help='epochs for training process')
 parser.add_argument('-step', '-s', default=200, type=int, metavar='N',
                     help='number of epochs to save model')
