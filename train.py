@@ -66,6 +66,7 @@ print('batchsize is: %d' % args.BatchSize)
 print('num_instance is %d' % args.num_instances)
 print('dimension of the embedding space is %d' % args.dim)
 print('log dir is: %s' % args.log_dir)
+print('the network is : %s' % args.net)
 
 #  load pretrained models
 if args.r is not None:
@@ -87,10 +88,11 @@ else:
     model_dict.update(pretrained_dict)
     model.load_state_dict(model_dict)
     # os.mkdir(log_dir)
-    torch.save(model, os.path.join(log_dir, 'model.pkl'))
 
 model = model.cuda()
 
+torch.save(model, os.path.join(log_dir, 'model.pkl'))
+print('initial model is save at %s' %log_dir)
 criterion = losses.create(args.loss).cuda()
 
 # fine tune the model: the learning rate for pretrained parameter is 1/10

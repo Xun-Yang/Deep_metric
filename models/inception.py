@@ -5,13 +5,6 @@ import torch.nn.functional as F
 
 __all__ = ['Inception3', 'inception_v3']
 
-
-# model_urls = {
-#     # Inception v3 ported from TensorFlow
-#     'inception_v3_google': 'https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth',
-# }
-
-
 def inception_v3(**kwargs):
     r"""Inception v3 model architecture from
     `"Rethinking the Inception Architecture for Computer Vision" <http://arxiv.org/abs/1512.00567>`_.
@@ -19,25 +12,18 @@ def inception_v3(**kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     # """
-    # if pretrained:
-    #     if 'transform_input' not in kwargs:
-    #         kwargs['transform_input'] = True
-    #     model = Inception3(**kwargs)
-    #     model.load_state_dict(model_zoo.load_url(model_urls['inception_v3_google']))
-    #     return model
 
     return Inception3(**kwargs)
 
 
 class Inception3(nn.Module):
 
-    def __init__(self, Embed_dim=512, num_classes=100, dropout=0.5, aux_logits=False, classify=True, transform_input=False):
+    def __init__(self, Embed_dim=512, num_classes=100, dropout=0.5, aux_logits=False, transform_input=False):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
         self.dropout = dropout
-        self.classify = classify
-
+        self.Embed_dim = Embed_dim
         self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=3, stride=2)
         self.Conv2d_2a_3x3 = BasicConv2d(32, 32, kernel_size=3)
         self.Conv2d_2b_3x3 = BasicConv2d(32, 64, kernel_size=3, padding=1)
@@ -56,9 +42,9 @@ class Inception3(nn.Module):
         self.Mixed_7a = InceptionD(768)
         self.Mixed_7b = InceptionE(1280)
         self.Mixed_7c = InceptionE(2048)
-        self.Embed = Embedding(2048, Embed_dim)
-        if self.classify:
-            self.logits_ = nn.Linear(Embed_dim, num_classes)
+
+        if self.Embed_dim > 0:
+            self.Embed = Embedding(2048, self.Embed_dim)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
@@ -123,15 +109,9 @@ class Inception3(nn.Module):
         # 1 x 1 x 2048
         x = x.view(x.size(0), -1)
         # 2048
-        x = self.Embed(x)
-        if not self.classify:
-            return x
-        if self.dropout is not None:
-            pred = nn.Dropout(self.dropout)(x)
-        pred = self.logits_(pred)
-        # if self.training and self.aux_logits:
-        #     return x, aux
-        return pred, x
+        if self.Embed_dim > 0:
+            x = self.Embed(x)
+        return x
 
 
 class Embedding(nn.Module):
@@ -352,20 +332,4 @@ class BasicConv2d(nn.Module):
         x = self.conv(x)
         x = self.bn(x)
         return F.relu(x, inplace=True)
-#
-# model = inception_v3(pretrained=False, aux_logits=False)
-# print(model)
-    #
-    # def reset_params(self):
-    #     for m in self.modules():
-    #         if isinstance(m, nn.Conv2d):
-    #             init.kaiming_normal(m.weight, mode='fan_out')
-    #             if m.bias is not None:
-    #                 init.constant(m.bias, 0)
-    #         elif isinstance(m, nn.BatchNorm2d):
-    #             init.constant(m.weight, 1)
-    #             init.constant(m.bias, 0)
-    #         elif isinstance(m, nn.Linear):
-    #             init.normal(m.weight, std=0.001)
-    #             if m.bias is not None:
-    #                 init.constant(m.bias, 0)
+
