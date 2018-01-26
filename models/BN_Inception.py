@@ -231,8 +231,11 @@ class BNInception(nn.Module):
         self.inception_5b_pool = nn.MaxPool2d ((3, 3), stride=(1, 1), padding=(1, 1), dilation=(1, 1), ceil_mode=True)
         self.inception_5b_pool_proj = nn.Conv2d(1024, 128, kernel_size=(1, 1), stride=(1, 1))
         self.inception_5b_pool_proj_bn = nn.BatchNorm2d(128, eps=1e-05, momentum=0.9, affine=True)
-        self.inception_5b_relu_pool_proj = nn.ReLU (inplace)
-        self.Embed = Embedding(1024, self.Embed_dim)
+        self.inception_5b_relu_pool_proj = nn.ReLU(inplace)
+        if self.Embed_dim == 0:
+            pass
+        else:
+            self.Embed = Embedding(1024, self.Embed_dim)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
@@ -250,6 +253,8 @@ class BNInception(nn.Module):
         x = F.adaptive_avg_pool2d(x, output_size=1)
         # 1 x 1 x 2048
         x = x.view(x.size(0), -1)
+        if self.Embed_dim == 0:
+            return x
         x = self.Embed(x)
         return x
 
