@@ -31,7 +31,7 @@ def inception_v3(**kwargs):
 
 class Inception3(nn.Module):
 
-    def __init__(self, embedding_dim=128, num_classes=100, dropout=0.5, aux_logits=False, classify=True, transform_input=False):
+    def __init__(self, Embed_dim=512, num_classes=100, dropout=0.5, aux_logits=False, classify=True, transform_input=False):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
@@ -56,9 +56,9 @@ class Inception3(nn.Module):
         self.Mixed_7a = InceptionD(768)
         self.Mixed_7b = InceptionE(1280)
         self.Mixed_7c = InceptionE(2048)
-        self.Embed = Embedding(2048, embedding_dim)
+        self.Embed = Embedding(2048, Embed_dim)
         if self.classify:
-            self.logits_ = nn.Linear(embedding_dim, num_classes)
+            self.logits_ = nn.Linear(Embed_dim, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
@@ -135,7 +135,6 @@ class Inception3(nn.Module):
 
 
 class Embedding(nn.Module):
-
     def __init__(self, in_dim, out_dim, dropout=None, normalized=True):
         super(Embedding, self).__init__()
         self.bn = nn.BatchNorm2d(in_dim, eps=0.001)
