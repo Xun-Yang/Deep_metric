@@ -87,7 +87,7 @@ else:
     model_dict.update(pretrained_dict)
     model.load_state_dict(model_dict)
     # os.mkdir(log_dir)
-    # torch.save(model, os.path.join(log_dir, 'model.pkl'))
+    torch.save(model, os.path.join(log_dir, 'model.pkl'))
 
 model = model.cuda()
 

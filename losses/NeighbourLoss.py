@@ -77,7 +77,7 @@ class NeighbourLoss(nn.Module):
         prec = 1 - float(err)/n
         neg_d = torch.mean(neg_dist).data[0]
         pos_d = torch.mean(pos_dist).data[0]
-        print('number of hard positive is: %03d' % num_hard_pos)
+        #print('number of hard positive is: %03d' % num_hard_pos)
         return loss, prec, pos_d, neg_d
 
 

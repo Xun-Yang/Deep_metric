@@ -15,15 +15,10 @@ paths = [os.path.join(root, x) for x in sets]
 
 
 for img in dirs:
-    if img[0] == '.':
-        print(img)
-    # img_path = os.path.join(image_folder, img)
-    # index = int((img.split('.')[-2][-3:]))
-    # print(index)
-    # if index < 101:
-    #     shutil.move(img_path, paths[0])
-    # else:
-    #     shutil.move(img_path, paths[1])
-    #
-
-
+    index = (int(img.split('.')[0]))
+    img_path = os.path.join(image_folder, img)
+    if index < 101:
+        print(index)
+        shutil.move(img_path, paths[0])
+    else:
+        shutil.move(img_path, paths[1])
