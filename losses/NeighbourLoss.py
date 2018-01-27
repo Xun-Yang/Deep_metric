@@ -47,7 +47,6 @@ class NeighbourLoss(nn.Module):
         #  clear way to compute the loss first
         loss = list()
         err = 0
-        num_hard_neg = []
 
         for i, pos_pair in enumerate(pos_dist):
 
@@ -57,7 +56,6 @@ class NeighbourLoss(nn.Module):
             neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.05)
 
             if len(neg_pair) > 0:
-                num_hard_neg.append(len(neg_pair))
                 loss.append(pos_min - torch.mean(neg_pair) + 0.05)
                 err += 1
 
@@ -70,7 +68,6 @@ class NeighbourLoss(nn.Module):
         neg_d = torch.mean(neg_dist).data[0]
         pos_d = torch.mean(pos_dist).data[0]
 
-        print('numbers of hard neg pairs is : ', num_hard_neg)
         return loss, prec, pos_d, neg_d
 
 
