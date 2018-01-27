@@ -22,7 +22,7 @@ https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metr
    first 98 classes as train set and last 98 classes as test set
 - [CUB-200-2011](http://www.vision.caltech.edu/visipedia-data/CUB-200/images.tgz)
 
-  first 98 classes as train set and last 98 classes as test set
+  first 100 classes as train set and last 100 classes as test set
 
 - [Stanford-Online](ftp://cs.stanford.edu/cs/cvgl/Stanford_Online_Products.zip)
   

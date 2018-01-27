@@ -46,28 +46,31 @@ class NeighbourLoss(nn.Module):
 
         #  clear way to compute the loss first
         loss = list()
-        # prec = list()
         err = 0
-        num_hard_pos = 0
+        num_hard_neg = []
 
         for i, pos_pair in enumerate(pos_dist):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
-
             pos_min = pos_pair[0]
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.1)
+            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.05)
+
             if len(neg_pair) > 0:
-                loss.append(pos_min - torch.mean(neg_pair) + 0.1)
+                num_hard_neg.append(len(neg_pair))
+                loss.append(pos_min - torch.mean(neg_pair) + 0.05)
                 err += 1
 
         if len(loss) == 0:
             loss = 0.0 * (torch.mean(pos_min))
         else:
             loss = torch.sum(torch.cat(loss))/n
+
         prec = 1 - float(err)/n
         neg_d = torch.mean(neg_dist).data[0]
         pos_d = torch.mean(pos_dist).data[0]
+
+        print('numbers of hard neg pairs is : ', num_hard_neg)
         return loss, prec, pos_d, neg_d
 
 
@@ -79,12 +82,7 @@ def main():
     # margin = 0.5
     x = Variable(torch.rand(data_size, input_dim), requires_grad=False)
     w = Variable(torch.rand(input_dim, output_dim), requires_grad=True)
-    # print('training data is ', x)
-    # print('initial parameters are ', w)
     inputs = x.mm(w)
-    # print('extracted feature is :', inputs)
-
-    # y_ = np.random.randint(num_class, size=data_size)
     y_ = 8*list(range(num_class))
     targets = Variable(torch.IntTensor(y_))
 
