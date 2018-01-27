@@ -514,7 +514,7 @@ class Embedding(nn.Module):
         return x
 
 #
-#
+
 def bninception():
     r"""BNInception model architecture from <https://arxiv.org/pdf/1502.03167.pdf>`_ paper.
     """
