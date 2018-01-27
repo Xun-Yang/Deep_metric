@@ -133,7 +133,6 @@ for epoch in range(args.start, args.epochs):
         # get the inputs
         inputs, labels = data
         # break
-        print(inputs[1])
         # wrap them in Variable
         inputs = Variable(inputs.cuda())
         labels = Variable(labels).cuda()
