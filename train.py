@@ -48,7 +48,7 @@ parser.add_argument('-lr', type=float, default=1e-4,
 parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
                     help='number of data loading threads (default: 2)')
 parser.add_argument('--momentum', type=float, default=0.9)
-parser.add_argument('--weight-decay', type=float, default=5e-4)
+parser.add_argument('--weight-decay', type=float, default=5e-3)
 
 args = parser.parse_args()
 
@@ -86,6 +86,12 @@ else:
     pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
 
     model_dict.update(pretrained_dict)
+
+    # initialization of last linear weight
+    _, _, v = torch.svd(model_dict['Embed.linear.weight'])
+    model_dict['Embed.linear.weight'] = v.t()
+    model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
+
     model.load_state_dict(model_dict)
     # os.mkdir(log_dir)
 
@@ -96,13 +102,13 @@ print('initial model is save at %s' %log_dir)
 criterion = losses.create(args.loss).cuda()
 
 # fine tune the model: the learning rate for pretrained parameter is 1/10
-base_param_ids = set(map(id, model.Embed.parameters()))
-
-base_params = [p for p in model.parameters() if
-               id(p) in base_param_ids]
+new_param_ids = set(map(id, model.Embed.parameters()))
 
 new_params = [p for p in model.parameters() if
-              id(p) not in base_param_ids]
+               id(p) in new_param_ids]
+
+base_params = [p for p in model.parameters() if
+              id(p) not in new_param_ids]
 param_groups = [
             {'params': base_params, 'lr_mult': 0.1},
             {'params': new_params, 'lr_mult': 1.0}]
@@ -158,3 +164,4 @@ for epoch in range(args.start, args.epochs):
 torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
 print('Finished Training')
+

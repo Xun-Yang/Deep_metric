@@ -11,7 +11,7 @@ import DataSet
 cudnn.benchmark = True
 parser = argparse.ArgumentParser(description='PyTorch Testing')
 
-parser.add_argument('-data', type=str, default='car')
+parser.add_argument('-data', type=str, default='cub')
 parser.add_argument('-r', type=str, default='model.pkl', metavar='PATH')
 
 parser.add_argument('-test', type=int, default=1, help='evaluation on test set or train set')
