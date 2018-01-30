@@ -48,7 +48,7 @@ parser.add_argument('-lr', type=float, default=1e-4,
 parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
                     help='number of data loading threads (default: 2)')
 parser.add_argument('--momentum', type=float, default=0.9)
-parser.add_argument('--weight-decay', type=float, default=5e-3)
+parser.add_argument('--weight-decay', type=float, default=2e-4)
 
 args = parser.parse_args()
 
@@ -88,9 +88,9 @@ else:
     model_dict.update(pretrained_dict)
 
     # initialization of last linear weight
-    _, _, v = torch.svd(model_dict['Embed.linear.weight'])
-    model_dict['Embed.linear.weight'] = v.t()
-    model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
+    # _, _, v = torch.svd(model_dict['Embed.linear.weight'])
+    # model_dict['Embed.linear.weight'] = v.t()
+    # model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
 
     model.load_state_dict(model_dict)
     # os.mkdir(log_dir)

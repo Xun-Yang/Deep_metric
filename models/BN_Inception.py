@@ -503,8 +503,8 @@ class Embedding(nn.Module):
         self.normalized = normalized
 
     def forward(self, x):
-        x = self.bn(x)
-        x = F.relu(x, inplace=True)
+        # x = self.bn(x)
+        # x = F.relu(x, inplace=True)
         if self.dropout is not None:
             x = nn.Dropout(p=self.dropout)(x, inplace=True)
         x = self.linear(x)
