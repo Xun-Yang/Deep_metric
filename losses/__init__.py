@@ -6,6 +6,7 @@ from .BatchAll import BatchAllLoss
 from .NeighbourLoss import NeighbourLoss
 from .DistanceMatchLoss import DistanceMatchLoss
 from .NeighbourHardLoss import NeighbourHardLoss
+from .DistWeightLoss import DistWeightLoss
 
 __factory = {
     'triplet': TripletLoss,
@@ -15,6 +16,7 @@ __factory = {
     'neighbour': NeighbourLoss,
     'distance_match': DistanceMatchLoss,
     'neighard': NeighbourHardLoss,
+    'distweight': DistWeightLoss,
 }
 
 
