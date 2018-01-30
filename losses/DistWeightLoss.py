@@ -26,7 +26,7 @@ class DistWeightLoss(nn.Module):
         targets = targets.cuda()
         # split the positive and negative pairs
         eyes_ = Variable(torch.eye(n, n)).cuda()
-        eyes_ = Variable(torch.eye(n, n))
+        # eyes_ = Variable(torch.eye(n, n))
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) - pos_mask
         pos_mask = pos_mask - eyes_.eq(1)
@@ -49,14 +49,15 @@ class DistWeightLoss(nn.Module):
             # print(i)
             pos_pair = torch.sort(pos_pair)[0]
             print(pos_pair)
-            sampled_index = torch.multinomial(2*pos_pair, 1)
-            print('sampled pos is : ', sampled_index)
+            sampled_index = torch.multinomial(torch.exp(5*pos_pair), 1)
+            # print(torch.exp(5*pos_pair))
+            # print('sampled pos is : ', sampled_index)
             neg_pair = torch.sort(neg_sim[i])[0]
             pos_min = pos_pair[sampled_index]
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.05)
-
+            neg_pair = torch.masked_select(neg_pair, neg_pair > pos_min - 0.01)
+            # print('neg_pair is :', neg_pair)
             if len(neg_pair) > 0:
-                loss.append(pos_min - torch.mean(neg_pair) + 0.05)
+                loss.append(torch.mean(neg_pair) - pos_min + 0.01)
                 err += 1
 
         if len(loss) == 0:

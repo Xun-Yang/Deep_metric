@@ -8,7 +8,7 @@ from torch.autograd import Variable
 
 def similarity(inputs_):
     # Compute similarity mat of deep feature
-    n = inputs_.size(0)
+    # n = inputs_.size(0)
     sim = torch.matmul(inputs_, inputs_.t())
     return sim
 
@@ -22,11 +22,11 @@ class BinDevianceLoss(nn.Module):
         n = inputs.size(0)
         # Compute similarity matrix
         sim_mat = similarity(inputs)
-        print(sim_mat)
-        # targets = targets.cuda()
+        # print(sim_mat)
+        targets = targets.cuda()
         # split the positive and negative pairs
-        # eyes_ = Variable(torch.eye(n, n)).cuda()
-        eyes_ = Variable(torch.eye(n, n))
+        eyes_ = Variable(torch.eye(n, n)).cuda()
+        # eyes_ = Variable(torch.eye(n, n))
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) - pos_mask
         pos_mask = pos_mask - eyes_.eq(1)
@@ -46,21 +46,20 @@ class BinDevianceLoss(nn.Module):
         err = 0
 
         for i, pos_pair in enumerate(pos_sim):
-
+            # print(i)
             pos_pair = torch.sort(pos_pair)[0]
-            print(pos_pair)
+            # print(pos_pair)
+            sampled_index = torch.multinomial(5*torch.exp(pos_pair), 1)
+            # print('sampled pos is : ', sampled_index)
             neg_pair = torch.sort(neg_sim[i])[0]
-            pos_min = pos_pair[0]
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.05)
+            pos_min = pos_pair[sampled_index]
 
-            if len(neg_pair) > 0:
-                loss.append(pos_min - torch.mean(neg_pair) + 0.05)
-                err += 1
+            pos_loss = torch.log(1 + torch.exp(-2*(pos_min-0.5)))
+            neg_loss = torch.mean(torch.log(1 + torch.exp(50*(neg_pair-0.5))))
 
-        if len(loss) == 0:
-            loss = 0.0 * (torch.mean(pos_min))
-        else:
-            loss = torch.sum(torch.cat(loss))/n
+            loss.append(pos_loss + neg_loss)
+
+        loss = torch.sum(torch.cat(loss))/n
 
         prec = 1 - float(err)/n
         neg_d = torch.mean(neg_sim).data[0]
