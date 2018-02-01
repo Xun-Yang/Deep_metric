@@ -467,13 +467,13 @@ class BNInception(nn.Module):
         inception_5a_output_out = torch.cat([inception_5a_1x1_bn_out,inception_5a_3x3_bn_out,inception_5a_double_3x3_2_bn_out,inception_5a_pool_proj_bn_out], 1)
         inception_5b_1x1_out = self.inception_5b_1x1(inception_5a_output_out)
         inception_5b_1x1_bn_out = self.inception_5b_1x1_bn(inception_5b_1x1_out)
-        # inception_5b_relu_1x1_out = self.inception_5b_relu_1x1(inception_5b_1x1_bn_out)
+        inception_5b_relu_1x1_out = self.inception_5b_relu_1x1(inception_5b_1x1_bn_out)
         inception_5b_3x3_reduce_out = self.inception_5b_3x3_reduce(inception_5a_output_out)
         inception_5b_3x3_reduce_bn_out = self.inception_5b_3x3_reduce_bn(inception_5b_3x3_reduce_out)
         inception_5b_relu_3x3_reduce_out = self.inception_5b_relu_3x3_reduce(inception_5b_3x3_reduce_bn_out)
         inception_5b_3x3_out = self.inception_5b_3x3(inception_5b_3x3_reduce_bn_out)
         inception_5b_3x3_bn_out = self.inception_5b_3x3_bn(inception_5b_3x3_out)
-        # inception_5b_relu_3x3_out = self.inception_5b_relu_3x3(inception_5b_3x3_bn_out)
+        inception_5b_relu_3x3_out = self.inception_5b_relu_3x3(inception_5b_3x3_bn_out)
         inception_5b_double_3x3_reduce_out = self.inception_5b_double_3x3_reduce(inception_5a_output_out)
         inception_5b_double_3x3_reduce_bn_out = self.inception_5b_double_3x3_reduce_bn(inception_5b_double_3x3_reduce_out)
         inception_5b_relu_double_3x3_reduce_out = self.inception_5b_relu_double_3x3_reduce(inception_5b_double_3x3_reduce_bn_out)
@@ -483,11 +483,11 @@ class BNInception(nn.Module):
         inception_5b_double_3x3_2_out = self.inception_5b_double_3x3_2(inception_5b_double_3x3_1_bn_out)
         inception_5b_double_3x3_2_bn_out = self.inception_5b_double_3x3_2_bn(inception_5b_double_3x3_2_out)
 
-        # inception_5b_relu_double_3x3_2_out = self.inception_5b_relu_double_3x3_2(inception_5b_double_3x3_2_bn_out)
+        inception_5b_relu_double_3x3_2_out = self.inception_5b_relu_double_3x3_2(inception_5b_double_3x3_2_bn_out)
         inception_5b_pool_out = self.inception_5b_pool(inception_5a_output_out)
         inception_5b_pool_proj_out = self.inception_5b_pool_proj(inception_5b_pool_out)
         inception_5b_pool_proj_bn_out = self.inception_5b_pool_proj_bn(inception_5b_pool_proj_out)
-        # inception_5b_relu_pool_proj_out = self.inception_5b_relu_pool_proj(inception_5b_pool_proj_bn_out)
+        inception_5b_relu_pool_proj_out = self.inception_5b_relu_pool_proj(inception_5b_pool_proj_bn_out)
         inception_5b_output_out = torch.cat([inception_5b_1x1_bn_out,
                                              inception_5b_3x3_bn_out,
                                              inception_5b_double_3x3_2_bn_out,
@@ -509,9 +509,17 @@ class Embedding(nn.Module):
         if self.dropout is not None:
             x = nn.Dropout(p=self.dropout)(x, inplace=True)
         x = self.linear(x)
+        x = [x[:170], x[170:341], x[341:]]
+        print(x)
+        temp = []
         if self.normalized:
-            norm = x.norm(dim=1, p=2, keepdim=True)
-            x = x.div(norm.expand_as(x))
+            for feat in x:
+                norm = feat.norm(dim=1, p=2, keepdim=True)
+                feat = feat.div(norm.expand_as(feat))
+                temp.append(feat)
+                print('feat norm is : ', torch.norm(feat, p=2))
+            x = torch.cat(temp, 1)
+            print(x)
         return x
 
 #
