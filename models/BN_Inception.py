@@ -509,17 +509,18 @@ class Embedding(nn.Module):
         if self.dropout is not None:
             x = nn.Dropout(p=self.dropout)(x, inplace=True)
         x = self.linear(x)
-        x = [x[:170], x[170:341], x[341:]]
-        print(x)
+        # print(x)
+        x = [x[:, :170], x[:, 170:341], x[:, 341:]]
+        # print(x)
         temp = []
         if self.normalized:
             for feat in x:
                 norm = feat.norm(dim=1, p=2, keepdim=True)
                 feat = feat.div(norm.expand_as(feat))
                 temp.append(feat)
-                print('feat norm is : ', torch.norm(feat, p=2))
+                # print('feat norm is : ', torch.norm(feat, dim=1, p=2))
             x = torch.cat(temp, 1)
-            print(x)
+            # print(x)
         return x
 
 #
