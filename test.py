@@ -39,7 +39,7 @@ print('embedding dimension is:', len(features[0]))
 print('test data size is :', len(labels))
 num_class = len(set(labels))
 print('number of classes is :', num_class)
-print('compute the NMI index:', NMI(features, labels, n_cluster=num_class))
+# print('compute the NMI index:', NMI(features, labels, n_cluster=num_class))
 
 # print(len(features))
 # sim_mat = pairwise_similarity(features)

@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import torch
 from torch import nn
 from torch.autograd import Variable
-# import numpy as np
+import numpy as np
 
 
 def similarity(inputs_):
@@ -43,25 +43,57 @@ class BinDevianceLoss(nn.Module):
 
         #  clear way to compute the loss first
         loss = list()
-        err = 0
+        c = 0
 
         for i, pos_pair in enumerate(pos_sim):
             # print(i)
-            pos_pair = torch.sort(pos_pair)[0]
-            # print(pos_pair)
-            sampled_index = torch.multinomial(5*torch.exp(pos_pair), 1)
-            # print('sampled pos is : ', sampled_index)
+            pos_pair = torch.sort(pos_pair)[0][2:]
             neg_pair = torch.sort(neg_sim[i])[0]
-            pos_min = pos_pair[sampled_index]
 
-            pos_loss = torch.log(1 + torch.exp(-2*(pos_min-0.5)))
-            neg_loss = torch.mean(torch.log(1 + torch.exp(50*(neg_pair-0.5))))
+            # print(pos_pair)
+            # sampled_index = torch.multinomial(5*torch.exp(pos_pair), 1)
+            # print('sampled pos is : ', sampled_index)
+            neg_pair = torch.masked_select(neg_pair, neg_pair > pos_pair[0] - 0.1)
+            # pos_pair = pos_pair[1:]
+            if len(neg_pair) < 1:
+                c += 1
+                continue
 
+            # pos_pair = torch.masked_select(pos_pair, pos_pair < torch.max(neg_pair) + 0.05)
+            # if len(pos_pair) < 1:
+            #     c += 1
+            #     continue
+
+            # if pos_pair[-1].data[0] > torch.max(neg_pair).data[0]:
+            #     c += 1
+
+            neg_pair = torch.sort(neg_pair)[0]
+
+            if i == 1 and np.random.randint(199) == 1:
+                print('neg_pair is ---------', neg_pair)
+                print('pos_pair is ---------', pos_pair.data)
+            # # pos_min = pos_pair[sampled_index]
+            #
+            # neg_base = torch.mean(neg_pair[-30:]).data[0]
+            # pos_base = torch.mean(pos_pair).data[0]
+
+            pos_loss = torch.mean(torch.log(1 + torch.exp(-2*(pos_pair - 0.5))))
+
+            # p = torch.mean(torch.exp(-(pos_pair - neg_base)/(1 + torch.exp(-(pos_pair - neg_base)))))
+
+            # q = 20 * torch.mean(torch.exp(20*(neg_pair - pos_base)) / (1 + torch.exp(20*(neg_pair - pos_base))))
+
+            # ratio = p/q
+
+            # if i % 50 == 1 :
+            #     print('p, q is: ', p, q)
+            #     print('ratio is : ', ratio)
+            neg_loss = 0.04*torch.mean(torch.log(1 + torch.exp(50*(neg_pair - 0.5))))
             loss.append(pos_loss + neg_loss)
 
         loss = torch.sum(torch.cat(loss))/n
 
-        prec = 1 - float(err)/n
+        prec = float(c)/n
         neg_d = torch.mean(neg_sim).data[0]
         pos_d = torch.mean(pos_sim).data[0]
 
@@ -75,7 +107,7 @@ def main():
     num_class = 4
     # margin = 0.5
     x = Variable(torch.rand(data_size, input_dim), requires_grad=False)
-    print(x)
+    # print(x)
     w = Variable(torch.rand(input_dim, output_dim), requires_grad=True)
     inputs = x.mm(w)
     y_ = 8*list(range(num_class))
@@ -87,4 +119,5 @@ def main():
 if __name__ == '__main__':
     main()
     print('Congratulations to you!')
+
 

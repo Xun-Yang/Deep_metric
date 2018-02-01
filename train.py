@@ -67,6 +67,7 @@ print('num_instance is %d' % args.num_instances)
 print('dimension of the embedding space is %d' % args.dim)
 print('log dir is: %s' % args.log_dir)
 print('the network is : %s' % args.net)
+print('loss function for training is: %s' % args.loss)
 
 #  load pretrained models
 if args.r is not None:
@@ -158,10 +159,11 @@ for epoch in range(args.start, args.epochs):
     # print(epoch)
     print('[epoch %05d]\t loss: %.7f \t prec: %.3f \t pos-dist: %.3f \tneg-dist: %.3f'
           % (epoch + 1,  running_loss, inter_, dist_ap, dist_an))
-    if (epoch + 1) % args.save_step == 0:
+    if epoch % args.save_step == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
 torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
 print('Finished Training')
+
 
