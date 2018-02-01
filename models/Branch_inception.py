@@ -5,12 +5,12 @@ import torch.utils.model_zoo as model_zoo
 import os
 import sys
 
-__all__ = ['BNInception', 'bninception']
+__all__ = ['Branch_Inception', 'branch_inception']
 
 
-class BNInception(nn.Module):
+class Branch_Inception(nn.Module):
     def __init__(self, Embed_dim=512):
-        super(BNInception, self).__init__()
+        super(Branch_Inception).__init__()
         self.Embed_dim = Embed_dim
         inplace = True
         self.conv1_7x7_s2 = nn.Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3))
@@ -509,17 +509,26 @@ class Embedding(nn.Module):
         if self.dropout is not None:
             x = nn.Dropout(p=self.dropout)(x, inplace=True)
         x = self.linear(x)
+        # print(x)
+        x = [x[:, :170], x[:, 170:341], x[:, 341:]]
+        # print(x)
+        temp = []
         if self.normalized:
-            norm = x.norm(dim=1, p=2, keepdim=True)
-            x = x.div(norm.expand_as(x))
+            for feat in x:
+                norm = feat.norm(dim=1, p=2, keepdim=True)
+                feat = feat.div(norm.expand_as(feat))
+                temp.append(feat)
+                # print('feat norm is : ', torch.norm(feat, dim=1, p=2))
+            x = torch.cat(temp, 1)
+            # print(x)
         return x
 
 #
 
-def bninception():
+def branch_inception():
     r"""BNInception model architecture from <https://arxiv.org/pdf/1502.03167.pdf>`_ paper.
     """
-    model = BNInception(Embed_dim=256)
+    model = Branch_Inception(Embed_dim=256)
     return model
 #
 #

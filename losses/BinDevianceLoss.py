@@ -47,13 +47,13 @@ class BinDevianceLoss(nn.Module):
 
         for i, pos_pair in enumerate(pos_sim):
             # print(i)
-            pos_pair = torch.sort(pos_pair)[0][2:]
+            pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_sim[i])[0]
 
             # print(pos_pair)
             # sampled_index = torch.multinomial(5*torch.exp(pos_pair), 1)
             # print('sampled pos is : ', sampled_index)
-            neg_pair = torch.masked_select(neg_pair, neg_pair > pos_pair[0] - 0.1)
+            neg_pair = torch.masked_select(neg_pair, neg_pair > pos_pair[0] - 0.05)
             # pos_pair = pos_pair[1:]
             if len(neg_pair) < 1:
                 c += 1

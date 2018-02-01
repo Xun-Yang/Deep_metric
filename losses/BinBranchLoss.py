@@ -31,7 +31,6 @@ class BinBranchLoss(nn.Module):
             prec_list.append(prec)
             pos_d_list.append(pos_d)
             neg_d_list.append(neg_d)
-        print(loss_list, prec_list, pos_d_list, neg_d_list)
 
         loss = torch.mean(torch.cat(loss_list))
         prec = np.mean(prec_list)
