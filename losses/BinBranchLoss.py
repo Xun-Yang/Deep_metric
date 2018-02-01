@@ -15,10 +15,10 @@ def similarity(inputs_):
 
 
 class BinBranchLoss(nn.Module):
-    def __init__(self, slice=[0, 170, 341, 512]):
+    def __init__(self, margin=0.4, slice=[0, 170, 341, 512]):
         super(BinBranchLoss, self).__init__()
         self.s = slice
-        # self.margin = margin
+        self.margin = margin
 
     def forward(self, inputs, targets):
         inputs = [inputs[:, self.s[i]:self.s[i+1]]
@@ -26,7 +26,7 @@ class BinBranchLoss(nn.Module):
         loss_list, prec_list, pos_d_list, neg_d_list = [], [], [], []
 
         for input in inputs:
-            loss, prec, pos_d, neg_d = BinDevianceLoss()(input, targets)
+            loss, prec, pos_d, neg_d = BinDevianceLoss(margin=self.margin)(input, targets)
             loss_list.append(loss)
             prec_list.append(prec)
             pos_d_list.append(pos_d)
