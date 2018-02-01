@@ -14,12 +14,14 @@ import DataSet
 cudnn.benchmark = True
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
-parser.add_argument('-data', default='car', required=True,
+parser.add_argument('-data', default='cub', required=True,
                     help='path to dataset')
-parser.add_argument('-loss', default='gaussian', required=True,
+parser.add_argument('-loss', default='branch', required=True,
                     help='path to dataset')
 parser.add_argument('-net', default='bn',
                     help='network used')
+parser.add_argument('-init', default=None,
+                    help='the way of weight initialization')
 parser.add_argument('-r', default=None,
                     help='the path of the pre-trained model')
 parser.add_argument('-start', default=0, type=int,
@@ -35,9 +37,10 @@ parser.add_argument('-num_instances', default=4, type=int, metavar='n',
 parser.add_argument('-dim', default=512, type=int, metavar='n',
                     help='the dimension of embedding space')
 
-parser.add_argument('-epochs', default=100, type=int, metavar='N',
+
+parser.add_argument('-epochs', default=400, type=int, metavar='N',
                     help='epochs for training process')
-parser.add_argument('-step', '-s', default=200, type=int, metavar='N',
+parser.add_argument('-step', '-s', default=50, type=int, metavar='N',
                     help='number of epochs to save model')
 parser.add_argument('-save_step', default=40, type=int, metavar='N',
                     help='number of epochs to save model')
@@ -88,10 +91,14 @@ else:
 
     model_dict.update(pretrained_dict)
 
-    # initialization of last linear weight
-    # _, _, v = torch.svd(model_dict['Embed.linear.weight'])
-    # model_dict['Embed.linear.weight'] = v.t()
-    # model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
+    if args.init == 'orth':
+
+        # initialization of last linear weight
+        _, _, v = torch.svd(model_dict['Embed.linear.weight'])
+        model_dict['Embed.linear.weight'] = v.t()
+        model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
+    else:
+        pass
 
     model.load_state_dict(model_dict)
     # os.mkdir(log_dir)

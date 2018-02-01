@@ -47,7 +47,7 @@ class BinDevianceLoss(nn.Module):
 
         for i, pos_pair in enumerate(pos_sim):
             # print(i)
-            pos_pair = torch.sort(pos_pair)[0]
+            pos_pair = torch.sort(pos_pair)[0][1:]
             neg_pair = torch.sort(neg_sim[i])[0]
 
             # print(pos_pair)
