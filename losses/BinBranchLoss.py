@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import torch
 from torch import nn
 from torch.autograd import Variable
-from BinDevianceLoss import BinDevianceLoss
+from .BinDevianceLoss import BinDevianceLoss
 import numpy as np
 
 
