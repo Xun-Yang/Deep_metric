@@ -8,6 +8,9 @@ from .DistanceMatchLoss import DistanceMatchLoss
 from .NeighbourHardLoss import NeighbourHardLoss
 from .DistWeightLoss import DistWeightLoss
 from .BinDevianceLoss import BinDevianceLoss
+from .BinBranchLoss import BinBranchLoss
+
+
 __factory = {
     'triplet': TripletLoss,
     'histogram': HistogramLoss,
@@ -18,6 +21,7 @@ __factory = {
     'neighard': NeighbourHardLoss,
     'distweight': DistWeightLoss,
     'bin': BinDevianceLoss,
+    'binbranch': BinBranchLoss,
 }
 
 
