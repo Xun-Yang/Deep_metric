@@ -78,7 +78,7 @@ class MarginDevianceLoss(nn.Module):
             # print(pos_pair)
             # sampled_index = torch.multinomial(5*torch.exp(pos_pair), 1)
             # print('sampled pos is : ', sampled_index)
-            neg_pair = torch.masked_select(neg_pair, neg_pair >  pos_mean - 1.5*pos_std)
+            neg_pair = torch.masked_select(neg_pair, neg_pair > pos_pair[0] - 0.05)
             # pos_pair = pos_pair[1:]
             if len(neg_pair) < 1:
                 c += 1
@@ -102,7 +102,7 @@ class MarginDevianceLoss(nn.Module):
             # neg_base = torch.mean(neg_pair[-30:]).data[0]
             # pos_base = torch.mean(pos_pair).data[0]
 
-            pos_loss = torch.mean(torch.log(1 + torch.exp(-2*(pos_pair - inter))))
+            pos_loss = torch.mean(torch.log(1 + torch.exp(-2*(pos_pair - inter - 0.05))))
 
             # p = torch.mean(torch.exp(-(pos_pair - neg_base)/(1 + torch.exp(-(pos_pair - neg_base)))))
 
@@ -113,7 +113,7 @@ class MarginDevianceLoss(nn.Module):
             # if i % 50 == 1 :
             #     print('p, q is: ', p, q)
             #     print('ratio is : ', ratio)
-            neg_loss = 0.04*torch.mean(torch.log(1 + torch.exp(50*(neg_pair - inter))))
+            neg_loss = 0.1*torch.mean(torch.log(1 + torch.exp(20*(neg_pair - inter + 0.05))))
             loss.append(pos_loss + neg_loss)
         print(gauss)
         loss = torch.sum(torch.cat(loss))/n
