@@ -15,8 +15,8 @@ class CUB200:
 
             transform = [transforms.Compose([
                 transforms.CovertBGR(),
-                transforms.Scale(256),
-                transforms.RandomSizedCrop(227),
+                transforms.Resize(256),
+                transforms.RandomResizedCrop(227),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 transforms.Normalize(mean=mean_values,
@@ -24,7 +24,7 @@ class CUB200:
             ]),
                 transforms.Compose([
                     transforms.CovertBGR(),
-                    transforms.Scale(256),
+                    transforms.Resize(256),
                     transforms.CenterCrop(227),
                     transforms.ToTensor(),
                     transforms.Normalize(mean=mean_values,
