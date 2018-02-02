@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 CUDA_VISIBLE_DEVICES=2 python train.py -data cub -net bn  -lr 1e-8 -dim 512   -num_instances 8 -BatchSize 128  -loss margin  -epochs 601 -log_dir margin  -save_step 50
 python test.py -r checkpoints/margin/model.pkl
 python test.py -r checkpoints/margin/50_model.pkl
