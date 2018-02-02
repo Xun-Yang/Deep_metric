@@ -82,7 +82,7 @@ else:
     model_dict = model.state_dict()
     # print(model_dict)
 
-    if args.net == 'bn':
+    if args.net == 'bn' or args.net == 'branch':
         pretrained_dict = torch.load('pretrained_models/bn_inception-239d2248.pth')
     else:
         pretrained_dict = torch.load('pretrained_models/inception_v3_google-1a9a5a14.pth')

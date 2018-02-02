@@ -15,7 +15,7 @@ def similarity(inputs_):
 
 
 class BinBranchLoss(nn.Module):
-    def __init__(self, margin=0.4, slice=[0, 170, 341, 512]):
+    def __init__(self, margin=0.5, slice=[0, 170, 341, 512]):
         super(BinBranchLoss, self).__init__()
         self.s = slice
         self.margin = margin
