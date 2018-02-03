@@ -14,7 +14,7 @@ from .MarginPositiveLoss import MarginPositiveLoss
 from .ContrastiveLoss import ContrastiveLoss
 from .DistWeightContrastiveLoss import DistWeightContrastiveLoss
 from .DistWeightDevianceLoss import DistWeightBinDevianceLoss
-
+from .DistWeightDevBranchLoss import DistWeightDevBranchLoss
 
 __factory = {
     'triplet': TripletLoss,
@@ -32,6 +32,7 @@ __factory = {
     'con': ContrastiveLoss,
     'dwcon': DistWeightContrastiveLoss,
     'dwdev': DistWeightBinDevianceLoss,
+    'dwdevbranch': DistWeightDevBranchLoss,
 }
 
 
