@@ -13,9 +13,20 @@ def similarity(inputs_):
     return sim
 
 
-class BinDevianceLoss(nn.Module):
+def GaussDistribution(data):
+    """
+    :param data:
+    :return:
+    """
+    mean_value = torch.mean(data)
+    diff = data - mean_value
+    std = torch.sqrt(torch.mean(torch.pow(diff, 2)))
+    return mean_value, std
+
+
+class DistWeightBinDevianceLoss(nn.Module):
     def __init__(self, margin=0.5):
-        super(BinDevianceLoss, self).__init__()
+        super(DistWeightBinDevianceLoss, self).__init__()
         self.margin = margin
 
     def forward(self, inputs, targets):
@@ -50,19 +61,23 @@ class BinDevianceLoss(nn.Module):
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_sim[i])[0]
 
-            neg_pair = torch.masked_select(neg_pair, neg_pair > pos_pair[0] - 0.05)
-            # pos_pair = pos_pair[1:]
+            neg_mean, neg_std = GaussDistribution(neg_pair)
+            prob = torch.exp(torch.pow(neg_pair - neg_mean, 2) / (2*torch.pow(neg_std, 2)))
+            neg_index = torch.multinomial(prob, num_instances - 1, replacement=False)
+
+            neg_pair = neg_pair[neg_index]
+
             if len(neg_pair) < 1:
                 c += 1
                 continue
 
             neg_pair = torch.sort(neg_pair)[0]
 
-            if i == 1 and np.random.randint(199) == 1:
+            if i == 1 and np.random.randint(256) == 1:
                 print('neg_pair is ---------', neg_pair)
                 print('pos_pair is ---------', pos_pair.data)
-            pos_loss = torch.mean(torch.log(1 + torch.exp(-2*(pos_pair - self.margin))))
 
+            pos_loss = torch.mean(torch.log(1 + torch.exp(-2*(pos_pair - self.margin))))
             neg_loss = 0.04*torch.mean(torch.log(1 + torch.exp(50*(neg_pair - self.margin))))
             loss.append(pos_loss + neg_loss)
 
@@ -88,7 +103,7 @@ def main():
     y_ = 8*list(range(num_class))
     targets = Variable(torch.IntTensor(y_))
 
-    print(BinDevianceLoss()(inputs, targets))
+    print(DistWeightBinDevianceLoss()(inputs, targets))
 
 
 if __name__ == '__main__':
