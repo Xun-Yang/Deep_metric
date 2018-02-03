@@ -31,7 +31,7 @@ __factory = {
     'positive': MarginPositiveLoss,
     'con': ContrastiveLoss,
     'dwcon': DistWeightContrastiveLoss,
-    'dwdev': DistWeightDevianceLoss,
+    'dwdev': DistWeightBinDevianceLoss,
 }
 
 
