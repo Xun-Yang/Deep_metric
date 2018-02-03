@@ -9,7 +9,7 @@ import torch.optim as optim
 from torch.autograd import Variable
 import models
 import losses
-from utils import RandomIdentitySampler, mkdir_if_missing, logging
+from utils import RandomIdentitySampler, mkdir_if_missing, logging, orth_reg
 import DataSet
 cudnn.benchmark = True
 
@@ -20,7 +20,7 @@ parser.add_argument('-loss', default='branch', required=True,
                     help='path to dataset')
 parser.add_argument('-net', default='bn',
                     help='network used')
-parser.add_argument('-init', default=None,
+parser.add_argument('-init', default='norm',
                     help='the way of weight initialization')
 parser.add_argument('-r', default=None,
                     help='the path of the pre-trained model')
@@ -52,6 +52,9 @@ parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
                     help='number of data loading threads (default: 2)')
 parser.add_argument('--momentum', type=float, default=0.9)
 parser.add_argument('--weight-decay', type=float, default=2e-4)
+parser.add_argument('-orth_cof', type=float, default=1e-3,
+                    help='try to make the last linear weight matrix to '
+                         'approximate the orthogonal matrix')
 
 args = parser.parse_args()
 
@@ -71,6 +74,7 @@ print('dimension of the embedding space is %d' % args.dim)
 print('log dir is: %s' % args.log_dir)
 print('the network is : %s' % args.net)
 print('loss function for training is: %s' % args.loss)
+print('the orthogonal weight regularizer is %f ' % args.orth_cof)
 
 #  load pretrained models
 if args.r is not None:
@@ -92,12 +96,17 @@ else:
     model_dict.update(pretrained_dict)
 
     if args.init == 'orth':
-	
         # initialization of last linear weight
         _, _, v = torch.svd(model_dict['Embed.linear.weight'])
         model_dict['Embed.linear.weight'] = v.t()
         model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
+    elif args.init == 'norm':
+        w = model_dict['Embed.linear.weight']
+        norm = w.norm(dim=1, p=2, keepdim=True)
+        w = w.div(norm.expand_as(w))
+        model_dict['Embed.linear.weight'] = w
     else:
+        model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
         print('initialize the network randomly -----------   hello wangxiaowu! come on!!')
 
     model.load_state_dict(model_dict)
@@ -106,7 +115,7 @@ else:
 model = model.cuda()
 
 torch.save(model, os.path.join(log_dir, 'model.pkl'))
-print('initial model is save at %s' %log_dir)
+print('initial model is save at %s' % log_dir)
 criterion = losses.create(args.loss).cuda()
 
 # fine tune the model: the learning rate for pretrained parameter is 1/10
@@ -133,7 +142,7 @@ train_loader = torch.utils.data.DataLoader(
 
 
 def adjust_learning_rate(opt_, epoch_, num_epochs):
-    """Sets the learning rate to the initial LR decayed by 1000 at last epochs"""
+    """Sets the learning rate to the initial LR decayed by 100 at last epochs"""
     if epoch_ > (num_epochs - args.step):
         lr = args.lr * \
              (0.01 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
@@ -159,7 +168,7 @@ for epoch in range(args.start, args.epochs):
 
         # loss = criterion(embed_feat, labels)
         loss, inter_, dist_ap, dist_an = criterion(embed_feat, labels)
-
+        loss = orth_reg(model, loss, cof=args.orth_cof)
         loss.backward()
         optimizer.step()
         running_loss += loss.data[0]

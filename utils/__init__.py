@@ -3,6 +3,7 @@ from .meters import *
 from .sampler import RandomIdentitySampler
 import torch
 from .osutils import mkdir_if_missing
+from .orthogonal_regularizaton import orth_reg
 
 def to_numpy(tensor):
     if torch.is_tensor(tensor):

@@ -70,6 +70,8 @@ class DistWeightBinDevianceLoss(nn.Module):
             if len(neg_pair) < 1:
                 c += 1
                 continue
+            if pos_pair[-1].data[0] > neg_pair[-1].data[0]:
+                c += 1
 
             neg_pair = torch.sort(neg_pair)[0]
 
