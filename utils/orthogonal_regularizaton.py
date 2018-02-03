@@ -10,7 +10,7 @@ def orth_reg(net, loss, cof=1e-3):
         if isinstance(m, nn.Linear):
             w = m.weight
             dimension = w.size()[0]
-            diff = torch.matmul(w, w.t()) - Variable(torch.eye(dimension))
+            diff = torch.matmul(w, w.t()) - Variable(torch.eye(dimension)).cuda()
             _loss = (1.0/w.size()[0])*torch.pow(torch.norm(diff), 2)
             orth_loss += cof*_loss
             loss = loss + Variable(orth_loss, requires_grad=True)
