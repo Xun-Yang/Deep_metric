@@ -12,6 +12,7 @@ from .BinBranchLoss import BinBranchLoss
 from .MarginDevianceLoss import MarginDevianceLoss
 from .MarginPositiveLoss import MarginPositiveLoss
 from .ContrastiveLoss import ContrastiveLoss
+from .DistWeightContrastiveLoss import DistWeightContrastiveLoss
 
 
 __factory = {
@@ -28,6 +29,7 @@ __factory = {
     'margin': MarginDevianceLoss,
     'positive': MarginPositiveLoss,
     'con': ContrastiveLoss,
+    'dwcon': DistWeightContrastiveLoss,
 }
 
 

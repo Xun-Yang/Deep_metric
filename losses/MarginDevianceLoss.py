@@ -79,7 +79,7 @@ class MarginDevianceLoss(nn.Module):
                 continue
 
             neg_pair = torch.sort(neg_pair)[0]
-	
+
             if i == 1 and np.random.randint(199) == 1:
                 print('neg_pair is ---------', neg_pair)
                 print('pos_pair is ---------', pos_pair.data)

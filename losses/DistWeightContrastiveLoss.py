@@ -21,10 +21,11 @@ def GaussDistribution(data):
     :param data:
     :return:
     """
-    mean_value = torch.mean(data).data[0]
+    mean_value = torch.mean(data)
     diff = data - mean_value
-    std = torch.sqrt(torch.mean(torch.pow(diff, 2))).data[0]
+    std = torch.sqrt(torch.mean(torch.pow(diff, 2)))
     return mean_value, std
+
 
 class DistWeightContrastiveLoss(nn.Module):
     def __init__(self, margin=0.1):
@@ -62,9 +63,16 @@ class DistWeightContrastiveLoss(nn.Module):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
-            
+
+            neg_mean, neg_std = GaussDistribution(neg_pair)
+            prob = torch.exp(torch.pow(neg_pair - neg_mean, 2) / (2*torch.pow(neg_std, 2)))
+            neg_index = torch.multinomial(prob, num_instances - 1, replacement=False)
+
+            neg_pair = neg_pair[neg_index]
+            # print(neg_pair)
+
             pos_loss = torch.mean(torch.clamp(pos_pair - 0.7, min=0))
-            neg_loss = torch.mean(torch.clamp(1.2- neg_pair, min=0)) 
+            neg_loss = torch.mean(torch.clamp(1.2 - neg_pair, min=0))
             loss_ = neg_loss + pos_loss
             loss.append(loss_)
 
