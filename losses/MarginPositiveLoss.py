@@ -25,9 +25,9 @@ def GaussDistribution(data):
     return mean_value, std
 
 
-class MarginDevianceLoss(nn.Module):
+class MarginPositiveLoss(nn.Module):
     def __init__(self):
-        super(MarginDevianceLoss, self).__init__()
+        super(MarginPositiveLoss, self).__init__()
 
     def forward(self, inputs, targets):
         n = inputs.size(0)
@@ -79,11 +79,17 @@ class MarginDevianceLoss(nn.Module):
                 continue
 
             neg_pair = torch.sort(neg_pair)[0]
+            # positive selection 
+            pos_pair = torch.masked_select(pos_pair, pos_pair < neg_pair[-1] + 0.05)
 	
+            if len(pos_pair) < 1:
+                c += 1
+                continue
+            
             if i == 1 and np.random.randint(199) == 1:
                 print('neg_pair is ---------', neg_pair)
                 print('pos_pair is ---------', pos_pair.data)
-            pos_loss = 0.2*torch.mean(torch.log(1 + torch.exp(-10*(pos_pair - inter ))))
+            pos_loss = torch.mean((inter - pos_pair))
 
             neg_loss = 0.05*torch.mean(torch.log(1 + torch.exp(40*(neg_pair - inter ))))
             loss.append(pos_loss + neg_loss)
@@ -110,7 +116,7 @@ def main():
     y_ = 8*list(range(num_class))
     targets = Variable(torch.IntTensor(y_))
 
-    print(MarginDevianceLoss()(inputs, targets))
+    print(MarginPositiveLoss()(inputs, targets))
 
 
 if __name__ == '__main__':

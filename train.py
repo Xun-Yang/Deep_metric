@@ -92,13 +92,13 @@ else:
     model_dict.update(pretrained_dict)
 
     if args.init == 'orth':
-
+	
         # initialization of last linear weight
         _, _, v = torch.svd(model_dict['Embed.linear.weight'])
         model_dict['Embed.linear.weight'] = v.t()
         model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
     else:
-        pass
+        print('initialize the network randomly -----------   hello wangxiaowu! come on!!')
 
     model.load_state_dict(model_dict)
     # os.mkdir(log_dir)

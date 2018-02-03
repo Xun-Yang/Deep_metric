@@ -88,7 +88,7 @@ class BinDevianceLoss(nn.Module):
             # if i % 50 == 1 :
             #     print('p, q is: ', p, q)
             #     print('ratio is : ', ratio)
-            neg_loss = 0.1*torch.mean(torch.log(1 + torch.exp(20*(neg_pair - self.margin))))
+            neg_loss = 0.04*torch.mean(torch.log(1 + torch.exp(50*(neg_pair - self.margin))))
             loss.append(pos_loss + neg_loss)
 
         loss = torch.sum(torch.cat(loss))/n
