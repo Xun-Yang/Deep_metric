@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-CUDA_VISIBLE_DEVICES=2 python train.py -data cub -net bn  -lr 1e-6 -dim 512   -num_instances 8 -BatchSize 128  -loss dwdev  -epochs 401 -log_dir dwdev  -save_step 50
+CUDA_VISIBLE_DEVICES=6 python train.py -data cub -net bn  -lr 1e-6 -dim 512   -num_instances 8 -BatchSize 128  -loss dwdev  -epochs 401 -log_dir dwdev  -save_step 50
 python test.py -r checkpoints/dwdev/model.pkl
 python test.py -r checkpoints/dwdev/50_model.pkl
 python test.py -r checkpoints/dwdev/100_model.pkl
