@@ -25,7 +25,7 @@ def GaussDistribution(data):
 
 
 class DistWeightBinDevianceLoss(nn.Module):
-    def __init__(self, margin=0.5):
+    def __init__(self, margin=0.38):
         super(DistWeightBinDevianceLoss, self).__init__()
         self.margin = margin
 
@@ -70,7 +70,7 @@ class DistWeightBinDevianceLoss(nn.Module):
             if len(neg_pair) < 1:
                 c += 1
                 continue
-            if pos_pair[-1].data[0] > neg_pair[-1].data[0]:
+            if pos_pair[-1].data[0] > neg_pair[-1].data[0] + 0.05:
                 c += 1
 
             neg_pair = torch.sort(neg_pair)[0]

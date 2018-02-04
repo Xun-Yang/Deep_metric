@@ -17,10 +17,12 @@ parser = argparse.ArgumentParser(description='PyTorch Training')
 parser.add_argument('-data', default='cub', required=True,
                     help='path to dataset')
 parser.add_argument('-loss', default='branch', required=True,
-                    help='path to dataset')
+                    help='loss for training network')
+parser.add_argument('-m', default=0.5,type=float, required=False,
+                   help='margin in loss function')
 parser.add_argument('-net', default='bn',
                     help='network used')
-parser.add_argument('-init', default='norm',
+parser.add_argument('-init', default=None,
                     help='the way of weight initialization')
 parser.add_argument('-r', default=None,
                     help='the path of the pre-trained model')
@@ -40,8 +42,8 @@ parser.add_argument('-dim', default=512, type=int, metavar='n',
 
 parser.add_argument('-epochs', default=400, type=int, metavar='N',
                     help='epochs for training process')
-parser.add_argument('-step', '-s', default=50, type=int, metavar='N',
-                    help='number of epochs to save model')
+parser.add_argument('-step', '-s', default=100, type=int, metavar='N',
+                    help='number of epochs to decay learn rate')
 parser.add_argument('-save_step', default=40, type=int, metavar='N',
                     help='number of epochs to save model')
 # optimizer
@@ -52,7 +54,7 @@ parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
                     help='number of data loading threads (default: 2)')
 parser.add_argument('--momentum', type=float, default=0.9)
 parser.add_argument('--weight-decay', type=float, default=2e-4)
-parser.add_argument('-orth_cof', type=float, default=1e-3,
+parser.add_argument('-orth_cof', type=float, default=0e-3,
                     help='try to make the last linear weight matrix to '
                          'approximate the orthogonal matrix')
 
@@ -97,10 +99,12 @@ else:
 
     if args.init == 'orth':
         # initialization of last linear weight
+        print('initialize the network orthogonaly -----------   hello wangxiaowu! come on!!')
         _, _, v = torch.svd(model_dict['Embed.linear.weight'])
         model_dict['Embed.linear.weight'] = v.t()
         model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
     elif args.init == 'norm':
+        print('initialize the network normly -----------   hello wangxiaowu! come on!!')
         w = model_dict['Embed.linear.weight']
         norm = w.norm(dim=1, p=2, keepdim=True)
         w = w.div(norm.expand_as(w))
@@ -116,7 +120,11 @@ model = model.cuda()
 
 torch.save(model, os.path.join(log_dir, 'model.pkl'))
 print('initial model is save at %s' % log_dir)
-criterion = losses.create(args.loss).cuda()
+print('the margin of ------------ loss function is ----------%f' % args.m )
+if args.m == 0.5:
+    criterion = losses.create(args.loss).cuda()
+else:
+    criterion = losses.create(args.loss, margin=args.m).cuda()
 
 # fine tune the model: the learning rate for pretrained parameter is 1/10
 new_param_ids = set(map(id, model.Embed.parameters()))
@@ -127,7 +135,7 @@ new_params = [p for p in model.parameters() if
 base_params = [p for p in model.parameters() if
               id(p) not in new_param_ids]
 param_groups = [
-            {'params': base_params, 'lr_mult': 0.1},
+            {'params': base_params, 'lr_mult': 1.0},
             {'params': new_params, 'lr_mult': 1.0}]
 
 learn_rate = args.lr
