@@ -42,7 +42,7 @@ parser.add_argument('-dim', default=512, type=int, metavar='n',
 
 parser.add_argument('-epochs', default=400, type=int, metavar='N',
                     help='epochs for training process')
-parser.add_argument('-step', '-s', default=150, type=int, metavar='N',
+parser.add_argument('-step', '-s', default=100, type=int, metavar='N',
                     help='number of epochs to decay learn rate')
 parser.add_argument('-save_step', default=40, type=int, metavar='N',
                     help='number of epochs to save model')
@@ -100,16 +100,17 @@ else:
 
     if args.init == 'orth':
         # initialization of last linear weight
-        print('initialize the network orthogonaly -----------   hello wangxiaowu! come on!!')
+        print('initialize the network orthogonally -----------   hello wangxiaowu! come on!!')
         _, _, v = torch.svd(model_dict['Embed.linear.weight'])
         model_dict['Embed.linear.weight'] = v.t()
         model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
     elif args.init == 'norm':
-        print('initialize the network normly -----------   hello wangxiaowu! come on!!')
+        print('initialize the network normally -----------   hello wangxiaowu! come on!!')
         w = model_dict['Embed.linear.weight']
         norm = w.norm(dim=1, p=2, keepdim=True)
         w = w.div(norm.expand_as(w))
         model_dict['Embed.linear.weight'] = w
+        model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
     elif args.init == 'rand':
         model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
         print('initialize the network randomly with 0000 bias -----------   hello wangxiaowu! come on!!')
@@ -138,7 +139,7 @@ new_params = [p for p in model.parameters() if
 base_params = [p for p in model.parameters() if
               id(p) not in new_param_ids]
 param_groups = [
-            {'params': base_params, 'lr_mult': 1.0},
+            {'params': base_params, 'lr_mult': 0.5},
             {'params': new_params, 'lr_mult': 1.0}]
 
 learn_rate = args.lr
@@ -155,8 +156,7 @@ train_loader = torch.utils.data.DataLoader(
 def adjust_learning_rate(opt_, epoch_, num_epochs):
     """Sets the learning rate to the initial LR decayed by 100 at last epochs"""
     if epoch_ > (num_epochs - args.step):
-        lr = args.lr * 0.1
-#             (0.01 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
+        lr = args.lr*(0.01 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
         for param_group in opt_.param_groups:
             param_group['lr'] = lr
 

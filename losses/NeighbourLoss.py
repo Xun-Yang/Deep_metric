@@ -72,8 +72,7 @@ class NeighbourLoss(nn.Module):
                         # and np.random.randint(256) == 1:
                     print('neg_pair is ---------', neg_pair)
                     print('pos_pair is ---------', pos_pair.data)
-                
-                
+
                 pos_loss = torch.log(1 + torch.exp(-2 * (self.margin - pos_pair)))
                 neg_loss = 0.08 * torch.mean(torch.log(1 + torch.exp(25 * (self.margin - neg_pair))))
                 loss.append(pos_loss + neg_loss)

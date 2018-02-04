@@ -15,6 +15,7 @@ from .ContrastiveLoss import ContrastiveLoss
 from .DistWeightContrastiveLoss import DistWeightContrastiveLoss
 from .DistWeightDevianceLoss import DistWeightBinDevianceLoss
 from .DistWeightDevBranchLoss import DistWeightDevBranchLoss
+from .DistWeightNeighbourLoss import DistWeightNeighbourLoss
 
 __factory = {
     'triplet': TripletLoss,
@@ -22,16 +23,17 @@ __factory = {
     'gaussian': GaussianMetricLoss,
     'batchall': BatchAllLoss,
     'neighbour': NeighbourLoss,
-    'distance_match': DistanceMatchLoss,
     'neighard': NeighbourHardLoss,
-    'distweight': DistWeightLoss,
     'bin': BinDevianceLoss,
     'binbranch': BinBranchLoss,
     'margin': MarginDevianceLoss,
     'positive': MarginPositiveLoss,
     'con': ContrastiveLoss,
+    'distweight': DistWeightLoss,
+    'distance_match': DistanceMatchLoss,
     'dwcon': DistWeightContrastiveLoss,
     'dwdev': DistWeightBinDevianceLoss,
+    'dwneig': DistWeightNeighbourLoss,
     'dwdevbranch': DistWeightDevBranchLoss,
 }
 
