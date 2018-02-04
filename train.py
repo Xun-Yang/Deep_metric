@@ -48,8 +48,9 @@ parser.add_argument('-save_step', default=40, type=int, metavar='N',
                     help='number of epochs to save model')
 # optimizer
 parser.add_argument('-lr', type=float, default=1e-4,
-                    help="learning rate of new parameters, for pretrained "
-                         "parameters it is 10 times smaller than this")
+                    help="learning rate of new parameters")
+parser.add_argument('-base', type=float, default=0.5,
+                    help="the multiplier for learning rate of base parameters")
 parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
                     help='number of data loading threads (default: 2)')
 parser.add_argument('--momentum', type=float, default=0.9)
@@ -70,14 +71,15 @@ sys.stdout = logging.Logger(os.path.join(log_dir, 'log.txt'))
 
 #  display information of current training
 print('train on dataset %s' % args.data)
-print('batchsize is: %d' % args.BatchSize)
+print('batch size is: %d' % args.BatchSize)
 print('num_instance is %d' % args.num_instances)
 print('dimension of the embedding space is %d' % args.dim)
 print('log dir is: %s' % args.log_dir)
 print('the network is : %s' % args.net)
 print('loss function for training is: %s' % args.loss)
-print('learn rate xxxx: %f' % args.lr)
-print('the orthogonal weight regularizer is %f ' % args.orth_cof)
+print('learn rate : %f' % args.lr)
+print('base parameter de learn rate is : %f' % args.base)
+print('the orthogonal weight regular is %f ' % args.orth_cof)
 
 #  load pretrained models
 if args.r is not None:
@@ -139,7 +141,7 @@ new_params = [p for p in model.parameters() if
 base_params = [p for p in model.parameters() if
               id(p) not in new_param_ids]
 param_groups = [
-            {'params': base_params, 'lr_mult': 0.5},
+            {'params': base_params, 'lr_mult': args.base},
             {'params': new_params, 'lr_mult': 1.0}]
 
 learn_rate = args.lr

@@ -35,10 +35,10 @@ else:
         data.train, batch_size=64, shuffle=False, drop_last=False)
 
 features, labels = extract_features(model, data_loader, print_freq=999, metric=None)
-print('embedding dimension is:', len(features[0]))
-print('test data size is :', len(labels))
+# print('embedding dimension is:', len(features[0]))
+# print('test data size is :', len(labels))
 num_class = len(set(labels))
-print('number of classes is :', num_class)
+# print('number of classes is :', num_class)
 # print('compute the NMI index:', NMI(features, labels, n_cluster=num_class))
 
 # print(len(features))
