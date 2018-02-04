@@ -49,3 +49,5 @@ if args.data == 'products':
     print(Recall_at_ks_products(sim_mat, query_ids=labels, gallery_ids=labels))
 else:
     print(Recall_at_ks(sim_mat, query_ids=labels, gallery_ids=labels))
+
+
