@@ -42,7 +42,7 @@ parser.add_argument('-dim', default=512, type=int, metavar='n',
 
 parser.add_argument('-epochs', default=400, type=int, metavar='N',
                     help='epochs for training process')
-parser.add_argument('-step', '-s', default=100, type=int, metavar='N',
+parser.add_argument('-step', '-s', default=150, type=int, metavar='N',
                     help='number of epochs to decay learn rate')
 parser.add_argument('-save_step', default=40, type=int, metavar='N',
                     help='number of epochs to save model')
@@ -76,6 +76,7 @@ print('dimension of the embedding space is %d' % args.dim)
 print('log dir is: %s' % args.log_dir)
 print('the network is : %s' % args.net)
 print('loss function for training is: %s' % args.loss)
+print('learn rate xxxx: %f' % args.lr)
 print('the orthogonal weight regularizer is %f ' % args.orth_cof)
 
 #  load pretrained models
@@ -109,10 +110,11 @@ else:
         norm = w.norm(dim=1, p=2, keepdim=True)
         w = w.div(norm.expand_as(w))
         model_dict['Embed.linear.weight'] = w
-    else:
+    elif args.init == 'rand':
         model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
-        print('initialize the network randomly -----------   hello wangxiaowu! come on!!')
-
+        print('initialize the network randomly with 0000 bias -----------   hello wangxiaowu! come on!!')
+    else:
+        print('initialize the network randomly  -----------   hello wangxiaowu! come on!!')
     model.load_state_dict(model_dict)
     # os.mkdir(log_dir)
 
@@ -122,6 +124,7 @@ torch.save(model, os.path.join(log_dir, 'model.pkl'))
 print('initial model is save at %s' % log_dir)
 print('the margin of ------------ loss function is ----------%f' % args.m )
 if args.m == 0.5:
+    print('-------------use default margin -----------------')
     criterion = losses.create(args.loss).cuda()
 else:
     criterion = losses.create(args.loss, margin=args.m).cuda()
@@ -152,8 +155,8 @@ train_loader = torch.utils.data.DataLoader(
 def adjust_learning_rate(opt_, epoch_, num_epochs):
     """Sets the learning rate to the initial LR decayed by 100 at last epochs"""
     if epoch_ > (num_epochs - args.step):
-        lr = args.lr * \
-             (0.01 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
+        lr = args.lr * 0.1
+#             (0.01 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
         for param_group in opt_.param_groups:
             param_group['lr'] = lr
 
@@ -176,7 +179,8 @@ for epoch in range(args.start, args.epochs):
 
         # loss = criterion(embed_feat, labels)
         loss, inter_, dist_ap, dist_an = criterion(embed_feat, labels)
-        loss = orth_reg(model, loss, cof=args.orth_cof)
+        if args.orth_cof > 1e-9:
+            loss = orth_reg(model, loss, cof=args.orth_cof)
         loss.backward()
         optimizer.step()
         running_loss += loss.data[0]

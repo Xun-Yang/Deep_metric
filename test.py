@@ -34,7 +34,7 @@ else:
     data_loader = torch.utils.data.DataLoader(
         data.train, batch_size=64, shuffle=False, drop_last=False)
 
-features, labels = extract_features(model, data_loader, print_freq=32, metric=None)
+features, labels = extract_features(model, data_loader, print_freq=999, metric=None)
 print('embedding dimension is:', len(features[0]))
 print('test data size is :', len(labels))
 num_class = len(set(labels))

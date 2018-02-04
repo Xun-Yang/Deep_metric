@@ -25,7 +25,7 @@ def GaussDistribution(data):
 
 
 class DistWeightBinDevianceLoss(nn.Module):
-    def __init__(self, margin=0.38):
+    def __init__(self, margin=0.5):
         super(DistWeightBinDevianceLoss, self).__init__()
         self.margin = margin
 

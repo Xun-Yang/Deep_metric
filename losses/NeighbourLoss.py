@@ -16,8 +16,19 @@ def euclidean_dist(inputs_):
     return dist
 
 
+def GaussDistribution(data):
+    """
+    :param data:
+    :return:
+    """
+    mean_value = torch.mean(data)
+    diff = data - mean_value
+    std = torch.sqrt(torch.mean(torch.pow(diff, 2)))
+    return mean_value, std
+
+
 class NeighbourLoss(nn.Module):
-    def __init__(self, margin=0.1):
+    def __init__(self, margin=1):
         super(NeighbourLoss, self).__init__()
         self.margin = margin
         self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
@@ -52,15 +63,17 @@ class NeighbourLoss(nn.Module):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
-            pos_min = pos_pair[0]
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.05)
+            pos_pair = pos_pair[0]
+            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair + 0.1)
 
             if len(neg_pair) > 0:
-                loss.append(pos_min - torch.mean(neg_pair) + 0.05)
+                pos_loss = torch.log(1 + torch.exp(-2 * (self.margin - pos_pair)))
+                neg_loss = 0.08 * torch.mean(torch.log(1 + torch.exp(25 * (self.margin - neg_pair))))
+                loss.append(pos_loss + neg_loss)
                 err += 1
 
         if len(loss) == 0:
-            loss = 0.0 * (torch.mean(pos_min))
+            loss = 0.0 * (torch.mean(pos_pair))
         else:
             loss = torch.sum(torch.cat(loss))/n
 
@@ -89,4 +102,5 @@ def main():
 if __name__ == '__main__':
     main()
     print('Congratulations to you!')
+
 
