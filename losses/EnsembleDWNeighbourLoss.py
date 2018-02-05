@@ -31,7 +31,7 @@ class EnsembleDWNeighbourLoss(nn.Module):
 
         for input_ in inputs:
             norm = input_.norm(dim=1, p=2, keepdim=True)
-            input_ = input_.div(norm.expand_as(input))
+            input_ = input_.div(norm.expand_as(input_))
             loss, prec_, pos_d, neg_d = DistWeightNeighbourLoss(margin=self.margin)(input_, targets)
             loss_list.append(loss)
             prec_list.append(prec_)
