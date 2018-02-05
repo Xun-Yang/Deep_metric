@@ -12,7 +12,7 @@ def random_slice(nums):
     dim = sum(nums)
     index_ = list(range(dim))
     random.shuffle(index_)
-    index_list = [index_[:, nums[i]:nums[i] + nums[i + 1]]
+    index_list = [index_[nums[i]:(nums[i] + nums[i + 1])]
                   for i in range(len(nums) - 1)]
     return index_list
 
