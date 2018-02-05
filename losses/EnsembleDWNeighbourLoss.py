@@ -18,7 +18,7 @@ def random_slice(nums):
 
 
 class EnsembleDWNeighbourLoss(nn.Module):
-    def __init__(self, margin=1, nums=(0, 170, 171, 171)):
+    def __init__(self, margin=1, nums=[0, 170, 171, 171]):
         super(EnsembleDWNeighbourLoss, self).__init__()
         self.Nums = nums
         self.margin = margin
