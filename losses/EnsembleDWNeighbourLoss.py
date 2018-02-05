@@ -29,19 +29,21 @@ class EnsembleDWNeighbourLoss(nn.Module):
                   for k_index in index_list]
         loss_list, prec_list, pos_d_list, neg_d_list = [], [], [], []
 
-        for input in inputs:
-            loss, prec, pos_d, neg_d = DistWeightNeighbourLoss(margin=self.margin)(input, targets)
+        for input_ in inputs:
+            norm = input_.norm(dim=1, p=2, keepdim=True)
+            input_ = input_.div(norm.expand_as(input))
+            loss, prec_, pos_d, neg_d = DistWeightNeighbourLoss(margin=self.margin)(input_, targets)
             loss_list.append(loss)
-            prec_list.append(prec)
+            prec_list.append(prec_)
             pos_d_list.append(pos_d)
             neg_d_list.append(neg_d)
 
         loss = torch.mean(torch.cat(loss_list))
-        prec = np.mean(prec_list)
+        acc = np.mean(prec_list)
         pos_d = np.mean((pos_d_list))
         neg_d = np.mean((neg_d_list))
 
-        return loss, prec, pos_d, neg_d
+        return loss, acc, pos_d, neg_d
 
 
 
