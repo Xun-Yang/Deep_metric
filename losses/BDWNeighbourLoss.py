@@ -8,7 +8,7 @@ import numpy as np
 
 
 class BDWNeighbourLoss(nn.Module):
-    def __init__(self, margin=1, slice=[0, 170, 341, 512]):
+    def __init__(self, margin=0.7, slice=[0, 170, 341, 512]):
         super(BDWNeighbourLoss, self).__init__()
         self.s = slice
         self.margin = margin

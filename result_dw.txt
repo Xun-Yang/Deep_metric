@@ -1,0 +1,100 @@
+evaluation on test set of cub with model: checkpoints/dw_neighbour/model.pkl
+[ 0.50168805  0.63014855  0.7466239   0.8472316 ]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/50_model.pkl
+[ 0.48987171  0.63014855  0.75050641  0.84993248]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/100_model.pkl
+[ 0.49763673  0.64027684  0.75523295  0.85111411]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/200_model.pkl
+[ 0.51688049  0.64618501  0.76299797  0.85820392]
+evaluation on train set of cub with model: checkpoints/dw_neighbour/250_model.pkl
+[ 0.58168486  0.68451569  0.78018417  0.85487722]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/300_model.pkl
+[ 0.51839973  0.65074274  0.76890614  0.85651587]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/400_model.pkl
+[ 0.51823093  0.64972991  0.76502363  0.8575287 ]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/500_model.pkl
+[ 0.52110061  0.65580689  0.7672181   0.86006077]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/600_model.pkl
+[ 0.51417961  0.64956111  0.77380149  0.86681296]
+evaluation on train set of cub with model: checkpoints/dw_neighbour/600_model.pkl
+[ 0.60283083  0.70276262  0.78905184  0.85879945]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/model.pkl
+[ 0.48835246  0.62424038  0.74189737  0.83912897]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/50_model.pkl
+[ 0.48463876  0.60803511  0.7359892   0.83760972]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/100_model.pkl
+[ 0.50253207  0.63656313  0.75658339  0.85651587]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/200_model.pkl
+[ 0.51333558  0.64348413  0.76468602  0.86006077]
+evaluation on train set of cub with model: checkpoints/dw_neighbour/250_model.pkl
+[ 0.57060027  0.67564802  0.76534789  0.84055252]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/300_model.pkl
+[ 0.51282917  0.64770425  0.76519244  0.85398379]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/400_model.pkl
+[ 0.51586766  0.64061445  0.76519244  0.8575287 ]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/500_model.pkl
+[ 0.51553005  0.64078325  0.76215395  0.85567184]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/600_model.pkl
+[ 0.5104659   0.63605672  0.75506415  0.85465901]
+evaluation on train set of cub with model: checkpoints/dw_neighbour/600_model.pkl
+[ 0.5931105   0.69423602  0.7808663   0.85027285]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/model.pkl
+[ 0.49696151  0.62559082  0.7429102   0.83997299]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/50_model.pkl
+[ 0.48683322  0.62778528  0.74814315  0.84672519]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/100_model.pkl
+[ 0.50118163  0.63757596  0.75590817  0.85027009]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/200_model.pkl
+[ 0.50928427  0.64804186  0.76333558  0.85449021]
+evaluation on train set of cub with model: checkpoints/dw_neighbour/250_model.pkl
+[ 0.55951569  0.67240791  0.76671214  0.8441337 ]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/300_model.pkl
+[ 0.51282917  0.65800135  0.76839973  0.85685348]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/400_model.pkl
+[ 0.50860905  0.64432816  0.76282917  0.85871033]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/500_model.pkl
+[ 0.51553005  0.65732613  0.77177583  0.8610736 ]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/600_model.pkl
+[ 0.51232275  0.6493923   0.76958136  0.85955436]
+evaluation on train set of cub with model: checkpoints/dw_neighbour/600_model.pkl
+[ 0.5936221   0.69662347  0.78922237  0.86238063]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/model.pkl
+[ 0.48733964  0.62238352  0.74172856  0.83457124]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/50_model.pkl
+[ 0.49088454  0.62018906  0.73987171  0.83963538]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/100_model.pkl
+[ 0.506921    0.63571911  0.75253207  0.84858204]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/200_model.pkl
+[ 0.5209318   0.65057394  0.76164754  0.85195814]
+evaluation on train set of cub with model: checkpoints/dw_neighbour/250_model.pkl
+[ 0.5670191   0.67684175  0.76961119  0.84498636]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/300_model.pkl
+[ 0.51671168  0.64821067  0.76130993  0.85499662]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/400_model.pkl
+[ 0.50675219  0.63639433  0.75371371  0.84875084]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/500_model.pkl
+[ 0.51806212  0.64618501  0.76215395  0.85347738]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/600_model.pkl
+[ 0.51688049  0.64652262  0.75877785  0.85027009]
+evaluation on train set of cub with model: checkpoints/dw_neighbour/600_model.pkl
+[ 0.5898704   0.69474761  0.7808663   0.84959072]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/model.pkl
+[ 0.49274139  0.62356516  0.73784605  0.84334909]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/50_model.pkl
+[ 0.48733964  0.61428089  0.74105334  0.84250506]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/100_model.pkl
+[ 0.49696151  0.63099257  0.75523295  0.84891965]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/200_model.pkl
+[ 0.51485483  0.64449696  0.75962188  0.8507765 ]
+evaluation on train set of cub with model: checkpoints/dw_neighbour/250_model.pkl
+[ 0.56360846  0.67718281  0.77131651  0.84686221]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/300_model.pkl
+[ 0.51367319  0.64601621  0.76620527  0.85482782]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/400_model.pkl
+[ 0.51704929  0.64837947  0.763842    0.85482782]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/500_model.pkl
+[ 0.50894666  0.64534099  0.76114112  0.85195814]
+evaluation on test set of cub with model: checkpoints/dw_neighbour/600_model.pkl
+[ 0.52650236  0.65681972  0.77481431  0.86360567]
+evaluation on train set of cub with model: checkpoints/dw_neighbour/600_model.pkl
+[ 0.5941337   0.69952251  0.79024557  0.86203956]
