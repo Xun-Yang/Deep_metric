@@ -1,0 +1,12 @@
+一. 下载CUB 数据集
+http://www.vision.caltech.edu/visipedia-data/CUB-200/images.tgz
+
+二.数据预处理成需要的格式：
+建议在自己的机子处理，我试过在你的服务器上处理，出了些问题。
+也许你也会有类似的问题，建议先自己离线处理，然后上传到网上
+处理脚本：Deep_Metric/DataSet/split_data.py
+数据最后的位置：Deep_Metric/DataSet/CUB_200_2011
+
+三. sh run_train_00.sh
+
+thanks !!!
