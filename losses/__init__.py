@@ -17,6 +17,8 @@ from .DistWeightDevianceLoss import DistWeightBinDevianceLoss
 from .DistWeightDevBranchLoss import DistWeightDevBranchLoss
 from .DistWeightNeighbourLoss import DistWeightNeighbourLoss
 from .BDWNeighbourLoss import BDWNeighbourLoss
+from .EnsembleDWNeighbourLoss import EnsembleDWNeighbourLoss
+
 
 __factory = {
     'triplet': TripletLoss,
@@ -37,6 +39,7 @@ __factory = {
     'dwneig': DistWeightNeighbourLoss,
     'dwdevbranch': DistWeightDevBranchLoss,
     'bdwneig': BDWNeighbourLoss,
+    'edwneig': EnsembleDWNeighbourLoss,
 }
 
 
