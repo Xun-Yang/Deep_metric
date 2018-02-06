@@ -51,7 +51,7 @@ class DistanceMatchLoss(nn.Module):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
-            pos_pair = pos_pair[:3]
+            # pos_pair = pos_pair[:3]
 
             neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[2] + 0.05)
 
