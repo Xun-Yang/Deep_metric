@@ -17,10 +17,9 @@ def euclidean_dist(inputs_):
 
 
 class DistanceMatchLoss(nn.Module):
-    def __init__(self, margin=0.05):
+    def __init__(self, margin=1):
         super(DistanceMatchLoss, self).__init__()
         self.margin = margin
-        self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
 
     def forward(self, inputs, targets):
         n = inputs.size(0)
@@ -29,6 +28,7 @@ class DistanceMatchLoss(nn.Module):
         targets = targets.cuda()
         # split the positive and negative pairs
         eyes_ = Variable(torch.eye(n, n)).cuda()
+        # eyes_ = Variable(torch.eye(n, n))
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) - pos_mask
         pos_mask = pos_mask - eyes_.eq(1)
@@ -36,46 +36,54 @@ class DistanceMatchLoss(nn.Module):
         pos_dist = torch.masked_select(dist_mat, pos_mask)
         neg_dist = torch.masked_select(dist_mat, neg_mask)
 
-        num_instances = len(pos_dist)//n + 1
+        num_instances = len(pos_dist) // n + 1
         num_neg_instances = n - num_instances
 
-        pos_dist = pos_dist.resize(len(pos_dist)//(num_instances-1), num_instances-1)
+        pos_dist = pos_dist.resize(len(pos_dist) // (num_instances - 1), num_instances - 1)
         neg_dist = neg_dist.resize(
             len(neg_dist) // num_neg_instances, num_neg_instances)
 
         #  clear way to compute the loss first
         loss = list()
-        # prec = list()
         err = 0
+
         for i, pos_pair in enumerate(pos_dist):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
-            times_neg_pos = len(neg_pair)//len(pos_pair)
+            # pos_pair = pos_pair[:]
 
-            # maybe cuda is needed here
-            y = Variable(torch.ones(times_neg_pos)).cuda()
-            loss_list = list()
-            for j, pos_ in enumerate(pos_pair):
-                neg_ = neg_pair[j*times_neg_pos:(j+1)*times_neg_pos]
-                pos_ = pos_.repeat(times_neg_pos)
-                loss_one_pos = self.ranking_loss(neg_, pos_, y)
-                loss_list.append(loss_one_pos)
-            loss_ = torch.sum(torch.cat(loss_list))
-            loss.append(loss_)
-            # print(loss_)
+            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[3] + 0.05)
 
-            # update the err number
+            if len(neg_pair) > 0:
+                if i == 201:
+                    # and np.random.randint(256) == 1:
+                    print('neg_pair is ---------', neg_pair)
+                    print('pos_pair is ---------', pos_pair.data)
 
-            if loss_.data[0] > 1e-3:
-                err += 1
+                # neg_base = torch.sum(torch.exp(-10*(neg_pair - 1))*neg_pair)/torch.sum(torch.exp(-10*(neg_pair - 1)))
+                base = 0.9/pos_pair[0].data[0]*pos_pair.data
+                pos_diff = torch.cat([pos_pair[i]-base[i] for i in range(len(base))])
+                pos_loss = 0.5 * torch.mean(torch.log(1 + torch.exp(2 * pos_diff)))
+                neg_loss = 0.05 * torch.mean(torch.log(1 + torch.exp(20 * (self.margin - neg_pair))))
+                loss.append(pos_loss + neg_loss)
 
-        loss = torch.mean(torch.cat(loss))/n
-        prec = 1 - float(err)/n
+                if pos_pair[0].data[0] > neg_pair[0].data[0] - 0.05:
+                    err += 1
+
+            else:
+                continue
+
+        if len(loss) == 0:
+            loss = 0.0 * (torch.mean(pos_pair))
+        else:
+            loss = torch.sum(torch.cat(loss)) / n
+
+        prec = 1 - float(err) / n
         neg_d = torch.mean(neg_dist).data[0]
         pos_d = torch.mean(pos_dist).data[0]
-        return loss, prec, pos_d, neg_d
 
+        return loss, prec, pos_d, neg_d
 
 def main():
     data_size = 32
@@ -94,9 +102,10 @@ def main():
     y_ = 8*list(range(num_class))
     targets = Variable(torch.IntTensor(y_))
 
-    print(DistanceMatchLoss(margin=0.1)(inputs, targets))
+    print(DistanceMatchLoss(margin=1)(inputs, targets))
 
 
 if __name__ == '__main__':
     main()
     print('Congratulations to you!')
+
