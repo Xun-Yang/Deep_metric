@@ -51,7 +51,7 @@ class DistanceMatchLoss(nn.Module):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
-            # pos_pair = pos_pair[:3]
+            pos_pair = pos_pair[:3]
 
             neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[2] + 0.05)
 
@@ -62,10 +62,11 @@ class DistanceMatchLoss(nn.Module):
                     print('pos_pair is ---------', pos_pair.data)
 
                 # neg_base = torch.sum(torch.exp(-10*(neg_pair - 1))*neg_pair)/torch.sum(torch.exp(-10*(neg_pair - 1)))
-                base = 0.95/pos_pair[0].data[0]*pos_pair.data
+                # base = 0.95/pos_pair[0].data[0]*pos_pair.data
+                base = [0.95, 1.05, 1.12]
                 pos_diff = torch.cat([pos_pair[i]-base[i] for i in range(len(base))])
-                pos_loss = 0.5 * torch.mean(torch.log(1 + torch.exp(2 * pos_diff)))
-                neg_loss = 0.05 * torch.mean(torch.log(1 + torch.exp(20 * (self.margin - neg_pair))))
+                pos_loss = 0.1 * torch.mean(torch.log(1 + torch.exp(10 * pos_diff)))
+                neg_loss = 0.02 * torch.mean(torch.log(1 + torch.exp(50 * (self.margin - neg_pair))))
                 loss.append(pos_loss + neg_loss)
 
                 if pos_pair[0].data[0] > neg_pair[0].data[0] - 0.05:
