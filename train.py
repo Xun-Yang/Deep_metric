@@ -20,7 +20,7 @@ parser.add_argument('-loss', default='branch', required=True,
                     help='loss for training network')
 parser.add_argument('-m', default=0.5,type=float, required=False,
                    help='margin in loss function')
-parser.add_argument('-nums', default=[0, 170, 171, 171], type=list, required=False)
+parser.add_argument('-nums', default=None, type=list, required=False)
 parser.add_argument('-net', default='bn',
                     help='network used')
 parser.add_argument('-init', default=None,
@@ -129,11 +129,12 @@ model = model.cuda()
 
 torch.save(model, os.path.join(log_dir, 'model.pkl'))
 print('initial model is save at %s' % log_dir)
-print('the margin of ------------ loss function is ----------%f' % args.m )
-if args.m == 0.5 and args is None:
+print('the margin of ------------ loss function is ----------%f' % args.m)
+
+if args.m == 0.5 and args.nums is None:
     print('-------------use default margin -----------------')
     criterion = losses.create(args.loss).cuda()
-elif args.nums is  None:
+elif args.nums is None:
     criterion = losses.create(args.loss, margin=args.m).cuda()
 else:
     nums = chars2nums(args.nums)
