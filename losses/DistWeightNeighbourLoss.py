@@ -94,7 +94,7 @@ class DistWeightNeighbourLoss(nn.Module):
                     print('pos_pair is ---------', pos_pair.data)
 
                 pos_loss = torch.log(1 + torch.exp(-(self.margin - pos_pair)))
-                neg_loss = 0.08 * torch.mean(torch.log(1 + torch.exp(25 * (self.margin - neg_pair))))
+                neg_loss = 0.08 * torch.mean(torch.log(1 + torch.exp(25 * ( - neg_pair))))
                 loss.append(pos_loss + neg_loss)
                 err += 1
 
