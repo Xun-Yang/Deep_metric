@@ -50,8 +50,8 @@ parser.add_argument('-save_step', default=40, type=int, metavar='N',
 # optimizer
 parser.add_argument('-lr', type=float, default=1e-4,
                     help="learning rate of new parameters")
-parser.add_argument('-base', type=float, default=0.5,
-                    help="the multiplier for learning rate of base parameters")
+parser.add_argument('-base', type=float, default=0.1,
+                    help="the multiplier for learning rate of pre-trained  parameters")
 parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
                     help='number of data loading threads (default: 2)')
 parser.add_argument('--momentum', type=float, default=0.9)

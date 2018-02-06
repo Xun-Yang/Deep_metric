@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+
+
 def chars2nums(a):
     nums_list = ['0']
     for k in a:

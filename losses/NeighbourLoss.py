@@ -65,16 +65,16 @@ class NeighbourLoss(nn.Module):
             neg_pair = torch.sort(neg_dist[i])[0]
             pos_pair = pos_pair[0]
             
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair + 0.2)
+            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair + 0.1)
 
             if len(neg_pair) > 0:
                 if i == 201:
                         # and np.random.randint(256) == 1:
                     print('neg_pair is ---------', neg_pair)
                     print('pos_pair is ---------', pos_pair.data)
-
-                pos_loss = torch.log(1 + torch.exp(-2 * (self.margin - pos_pair)))
-                neg_loss = 0.08 * torch.mean(torch.log(1 + torch.exp(25 * (self.margin - neg_pair))))
+                base = 0.5*(pos_pair + torch.mean(neg_pair)).data[0]
+                pos_loss = torch.log(1 + torch.exp(-2 * (base - pos_pair)))
+                neg_loss = 0.2*torch.mean(torch.log(1 + torch.exp(10*(base - neg_pair))))
                 loss.append(pos_loss + neg_loss)
                 err += 1
             
