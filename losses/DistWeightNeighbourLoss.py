@@ -93,9 +93,13 @@ class DistWeightNeighbourLoss(nn.Module):
                     print('neg_pair is ---------', neg_pair)
                     print('pos_pair is ---------', pos_pair.data)
 
-                base = 0.5 * (pos_pair + torch.mean(neg_pair)).data[0]
-                pos_loss = torch.log(1 + torch.exp(-2 * (base - pos_pair)))
-                neg_loss = 0.2*torch.mean(torch.log(1 + torch.exp(10*(base - neg_pair))))
+                neg_base = torch.sum(torch.exp(-10 * (neg_pair - 1)) * neg_pair) / torch.sum(
+                    torch.exp(-10 * (neg_pair - 1)))
+                base = 0.5 * (pos_pair + neg_base).data[0]
+                if i == 1 and np.random.randint(10) == 1:
+                    print('----------************------    base is : %f' % base)
+                pos_loss = 0.1 * torch.log(1 + torch.exp(- (base - pos_pair)))
+                neg_loss = 0.1 * torch.mean(torch.log(1 + torch.exp(20 * (base - neg_pair))))
                 loss.append(pos_loss + neg_loss)
                 err += 1
 
