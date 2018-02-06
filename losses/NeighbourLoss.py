@@ -63,9 +63,9 @@ class NeighbourLoss(nn.Module):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
-            pos_pair = pos_pair[0]
+            pos_pair = pos_pair[:3]
             
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair + 0.1)
+            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[-1] + 0.05)
 
             if len(neg_pair) > 0:
                 if i == 201:
@@ -73,12 +73,11 @@ class NeighbourLoss(nn.Module):
                     print('neg_pair is ---------', neg_pair)
                     print('pos_pair is ---------', pos_pair.data)
 
-                neg_base = torch.sum(torch.exp(-10*(neg_pair - 1))*neg_pair)/torch.sum(torch.exp(-10*(neg_pair - 1)))
-                base = 0.5*(pos_pair + neg_base).data[0]
-                if i == 1 and np.random.randint(10) == 1:
-                    print('----------************------    base is : %f' % base)
-                pos_loss = 0.3*torch.log(1 + torch.exp(-2 * (base - pos_pair)))
-                neg_loss = 0.1*torch.mean(torch.log(1 + torch.exp(20*(base - neg_pair))))
+                # neg_base = torch.sum(torch.exp(-10*(neg_pair - 1))*neg_pair)/torch.sum(torch.exp(-10*(neg_pair - 1)))
+                # base = 0.5*(pos_pair + neg_base).data[0]
+                base = self.margin
+                pos_loss = 0.5 * torch.mean(torch.log(1 + torch.exp(-2 * (base - pos_pair))))
+                neg_loss = 0.05 * torch.mean(torch.log(1 + torch.exp(20*(base - neg_pair))))
                 loss.append(pos_loss + neg_loss)
                 err += 1
             else:
@@ -114,5 +113,6 @@ def main():
 if __name__ == '__main__':
     main()
     print('Congratulations to you!')
+
 
 

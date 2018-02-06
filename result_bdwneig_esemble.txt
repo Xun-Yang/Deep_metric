@@ -1,2 +1,0 @@
-evaluation on test set of cub with model: checkpoints/dw_neighbour/model.pkl
-evaluation on test set of cub with model: checkpoints/dw_neighbour/model.pkl

@@ -76,7 +76,7 @@ class DistWeightNeighbourLoss(nn.Module):
             neg_pair = torch.sort(neg_dist[i])[0]
             
             # sampling positive pair
-            pos_pair = pos_pair[0]
+            pos_pair = pos_pair[:3]
             
             # sampling negative
             neg_mean, neg_std = GaussDistribution(neg_pair)
@@ -85,7 +85,7 @@ class DistWeightNeighbourLoss(nn.Module):
 
             neg_pair = neg_pair[neg_index]
 
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair + 0.1)
+            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[-1] + 0.05)
 
             if len(neg_pair) > 0:
                 if i == 211:
@@ -93,15 +93,15 @@ class DistWeightNeighbourLoss(nn.Module):
                     print('neg_pair is ---------', neg_pair)
                     print('pos_pair is ---------', pos_pair.data)
 
-                neg_base = torch.sum(torch.exp(-10 * (neg_pair - 1)) * neg_pair) / torch.sum(
-                    torch.exp(-10 * (neg_pair - 1)))
-                base = 0.5 * (pos_pair + neg_base).data[0]
-                if i == 1 and np.random.randint(10) == 1:
-                    print('----------************------    base is : %f' % base)
-                pos_loss = 0.5 * torch.log(1 + torch.exp(- (base - pos_pair)))
-                neg_loss = 0.1 * torch.mean(torch.log(1 + torch.exp(20 * (base - neg_pair))))
+                # neg_base = torch.sum(torch.exp(-2 * (neg_pair - 1)) * neg_pair) / torch.sum(
+                #     torch.exp(-2 * (neg_pair - 1)))
+
+                base = self.margin
+                pos_loss = 0.5 * torch.mean(torch.log(1 + torch.exp(-2 * (base - pos_pair))))
+                neg_loss = 0.05 * torch.mean(torch.log(1 + torch.exp(20*(base - neg_pair))))
                 loss.append(pos_loss + neg_loss)
-                err += 1
+                if pos_pair[0].data[0] < neg_pair[0].data[0] - 0.1:
+                    err += 1
 
         if len(loss) == 0:
             loss = 0.0 * (torch.mean(pos_pair))
@@ -133,5 +133,6 @@ def main():
 if __name__ == '__main__':
     main()
     print('Congratulations to you!')
+
 
 
