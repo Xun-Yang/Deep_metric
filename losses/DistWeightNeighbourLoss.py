@@ -88,7 +88,7 @@ class DistWeightNeighbourLoss(nn.Module):
             neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[-1] + 0.05)
 
             if len(neg_pair) > 0:
-                if i == 211:
+                if i == 1 and np.random.randint(99) == 1:
                     # and np.random.randint(256) == 1:
                     print('neg_pair is ---------', neg_pair)
                     print('pos_pair is ---------', pos_pair.data)
