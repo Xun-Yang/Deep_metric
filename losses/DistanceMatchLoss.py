@@ -60,8 +60,14 @@ class DistanceMatchLoss(nn.Module):
 
         for i, pos_pair in enumerate(pos_dist):
 
+            pos_mean, pos_std = GaussDistribution(pos_pair)
+            prob = torch.exp(torch.pow(pos_pair - pos_mean, 2) / (2 * torch.pow(pos_std, 2)))
+            pos_index = torch.multinomial(prob, 3, replacement=False)
+
+            pos_pair = neg_pair[pos_index]
+
             pos_pair = torch.sort(pos_pair)[0]
-            neg_pair = torch.sort(neg_dist[i])[0]
+            neg_pair = torch.sort(neg_dist[i])[0]    
             pos_pair = pos_pair[:3]
 
             # sampling negative
@@ -81,7 +87,7 @@ class DistanceMatchLoss(nn.Module):
 
                 # neg_base = torch.sum(torch.exp(-10*(neg_pair - 1))*neg_pair)/torch.sum(torch.exp(-10*(neg_pair - 1)))
                 # base = 0.95/pos_pair[0].data[0]*pos_pair.data
-                base = [0.95, 1.05, 1.12]
+                base = [0.9, 1.05, 1.2]
                 muls = [4, 16, 64]
 
                 pos_diff = torch.cat([pos_pair[i]-base[i] for i in range(len(base))])
