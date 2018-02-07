@@ -65,7 +65,7 @@ class SoftmaxNeigLoss(nn.Module):
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
             # pos_pair = pos_pair[:4]
-            pos_neig = pos_pair[: 3]
+            pos_neig = pos_pair[:6]
             neg_neig = neg_pair[: 18]
 
             if i == 1 and np.random.randint(64) == 1:
@@ -74,7 +74,7 @@ class SoftmaxNeigLoss(nn.Module):
 
             base = 1.0
             pos_logit = torch.sum(torch.exp(self.alpha*(base - pos_pair)))
-            neg_logit = torch.sum(torch.exp(self.alpha*(base - neg_pair)))/6
+            neg_logit = torch.sum(torch.exp(self.alpha*(base - neg_pair)))/3
 
             loss_ = -torch.log(pos_logit/(pos_logit + neg_logit))
             loss.append(loss_)
