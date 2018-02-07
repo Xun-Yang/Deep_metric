@@ -73,7 +73,7 @@ class SoftmaxNeigLoss(nn.Module):
 
             base = 1.0
             pos_logit = torch.sum(torch.exp(self.alpha*(base - pos_pair)))
-            neg_logit = torch.sum(torch.exp(self.alpha*(base - neg_pair)))/4
+            neg_logit = torch.sum(torch.exp(self.alpha*(base - neg_pair)))
 
             loss_ = -torch.log(pos_logit/(pos_logit + neg_logit))
             loss.append(loss_)
