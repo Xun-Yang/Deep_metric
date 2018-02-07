@@ -90,8 +90,9 @@ class DistanceMatchLoss(nn.Module):
                 base = [0.9, 1.05, 1.2]
                 muls = [4, 16, 64]
 
-                pos_diff = torch.cat([pos_pair[i]-base[i] for i in range(len(base))])
-                pos_diff = [1.0/muls[i]*torch.log(1+torch.exp(pos_diff[i])) for i in range(len(base))]
+                pos_diff = [pos_pair[i]-base[i] for i in range(len(base))]
+                pos_diff = torch.cat([1.0/muls[i]*torch.log(
+                    1+torch.exp(pos_diff[i])) for i in range(len(base))])
                 pos_loss = torch.mean(pos_diff)
                 neg_loss = 0.02 * torch.mean(torch.log(1 + torch.exp(50 * (self.margin - neg_pair))))
                 loss.append(pos_loss + neg_loss)
