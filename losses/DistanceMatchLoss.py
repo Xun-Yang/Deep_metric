@@ -6,6 +6,17 @@ from torch.autograd import Variable
 # import numpy as np
 
 
+def GaussDistribution(data):
+    """
+    :param data:
+    :return:
+    """
+    mean_value = torch.mean(data)
+    diff = data - mean_value
+    std = torch.sqrt(torch.mean(torch.pow(diff, 2)))
+    return mean_value, std
+
+
 def euclidean_dist(inputs_):
     # Compute pairwise distance, replace by the official when merged
     n = inputs_.size(0)
@@ -53,6 +64,13 @@ class DistanceMatchLoss(nn.Module):
             neg_pair = torch.sort(neg_dist[i])[0]
             pos_pair = pos_pair[:3]
 
+            # sampling negative
+            neg_mean, neg_std = GaussDistribution(neg_pair)
+            prob = torch.exp(torch.pow(neg_pair - neg_mean, 2) / (2 * torch.pow(neg_std, 2)))
+            neg_index = torch.multinomial(prob, 3*num_instances, replacement=False)
+
+            neg_pair = neg_pair[neg_index]
+
             neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[2] + 0.05)
 
             if len(neg_pair) > 0:
@@ -64,8 +82,11 @@ class DistanceMatchLoss(nn.Module):
                 # neg_base = torch.sum(torch.exp(-10*(neg_pair - 1))*neg_pair)/torch.sum(torch.exp(-10*(neg_pair - 1)))
                 # base = 0.95/pos_pair[0].data[0]*pos_pair.data
                 base = [0.95, 1.05, 1.12]
+                muls = [4, 16, 64]
+
                 pos_diff = torch.cat([pos_pair[i]-base[i] for i in range(len(base))])
-                pos_loss = 0.1 * torch.mean(torch.log(1 + torch.exp(10 * pos_diff)))
+                pos_diff = [1.0/muls[i]*torch.log(1+torch.exp(pos_diff[i])) for i in range(len(base))]
+                pos_loss = torch.mean(pos_diff)
                 neg_loss = 0.02 * torch.mean(torch.log(1 + torch.exp(50 * (self.margin - neg_pair))))
                 loss.append(pos_loss + neg_loss)
 
