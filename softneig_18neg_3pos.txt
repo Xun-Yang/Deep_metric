@@ -1,0 +1,24 @@
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/model.pkl
+[ 0.48328832  0.61968265  0.74240378  0.83794733]
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/50_model.pkl
+[ 0.4826131   0.62356516  0.75084402  0.85567184]
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/100_model.pkl
+[ 0.50405132  0.63082377  0.75911546  0.85668467]
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/200_model.pkl
+[ 0.50641458  0.63858879  0.76367319  0.85634706]
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/300_model.pkl
+[ 0.51519244  0.64550979  0.76890614  0.86529372]
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/350_model.pkl
+[ 0.51856853  0.6456786   0.76671168  0.86276165]
+evaluation on train set of cub with model: checkpoints/softneig_18neg_3pos/350_model.pkl
+[ 0.57213506  0.68877899  0.79382674  0.87039563]
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/400_model.pkl
+[ 0.51890614  0.65209318  0.76991897  0.86630655]
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/450_model.pkl
+[ 0.50658339  0.64483457  0.76654288  0.8612424 ]
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/500_model.pkl
+[ 0.51688049  0.65091155  0.76856853  0.86259284]
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/550_model.pkl
+[ 0.52802161  0.64989872  0.76941256  0.86833221]
+evaluation on test set of cub with model: checkpoints/softneig_18neg_3pos/600_model.pkl
+[ 0.51755571  0.65243079  0.76856853  0.86580014]
