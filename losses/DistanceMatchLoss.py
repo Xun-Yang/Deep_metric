@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import torch
 from torch import nn
 from torch.autograd import Variable
-# import numpy as np
+import numpy as np
 
 
 def GaussDistribution(data):
@@ -59,18 +59,17 @@ class DistanceMatchLoss(nn.Module):
         err = 0
 
         for i, pos_pair in enumerate(pos_dist):
-
-            pos_mean, pos_std = GaussDistribution(pos_pair)
-            prob = torch.exp(torch.pow(pos_pair - pos_mean, 2) / (2 * torch.pow(pos_std, 2)))
-            pos_index = torch.multinomial(prob, 3, replacement=False)
-
-            pos_pair = neg_pair[pos_index]
-
+            # pos_mean, pos_std = GaussDistribution(pos_pair)
+            # prob = torch.exp(torch.pow(pos_pair - pos_mean, 2) / (2 * torch.pow(pos_std, 2)))
+            # pos_index = torch.multinomial(prob, 3, replacement=False)
+            #
+            # pos_pair = pos_pair[pos_index]
+            #
             pos_pair = torch.sort(pos_pair)[0]
-            neg_pair = torch.sort(neg_dist[i])[0]    
             pos_pair = pos_pair[:3]
 
             # sampling negative
+            neg_pair = neg_dist[i]
             neg_mean, neg_std = GaussDistribution(neg_pair)
             prob = torch.exp(torch.pow(neg_pair - neg_mean, 2) / (2 * torch.pow(neg_std, 2)))
             neg_index = torch.multinomial(prob, 3*num_instances, replacement=False)
@@ -80,21 +79,23 @@ class DistanceMatchLoss(nn.Module):
             neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[2] + 0.05)
 
             if len(neg_pair) > 0:
-                if i == 201:
+                neg_pair = torch.sort(neg_pair)[0]
+
+                if i == 1 and np.random.randint(99) == 1:
                     # and np.random.randint(256) == 1:
                     print('neg_pair is ---------', neg_pair)
                     print('pos_pair is ---------', pos_pair.data)
 
                 # neg_base = torch.sum(torch.exp(-10*(neg_pair - 1))*neg_pair)/torch.sum(torch.exp(-10*(neg_pair - 1)))
                 # base = 0.95/pos_pair[0].data[0]*pos_pair.data
-                base = [0.9, 1.05, 1.2]
-                muls = [4, 16, 64]
-
-                pos_diff = [pos_pair[i]-base[i] for i in range(len(base))]
-                pos_diff = torch.cat([1.0/muls[i]*torch.log(
-                    1+torch.exp(pos_diff[i])) for i in range(len(base))])
+                base = [0.95, 1.05, 1.12]
+                muls = [4, 8, 16]
+                pos_diff = [pos_pair[i] - base[i] for i in range(len(base))]
+                pos_diff = torch.cat([1.0 / muls[i] *
+                                      torch.log(1 + torch.exp(pos_diff[i])) for i in range(len(base))])
                 pos_loss = torch.mean(pos_diff)
                 neg_loss = 0.02 * torch.mean(torch.log(1 + torch.exp(50 * (self.margin - neg_pair))))
+
                 loss.append(pos_loss + neg_loss)
 
                 if pos_pair[0].data[0] > neg_pair[0].data[0] - 0.05:

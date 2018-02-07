@@ -18,6 +18,7 @@ from .DistWeightDevBranchLoss import DistWeightDevBranchLoss
 from .DistWeightNeighbourLoss import DistWeightNeighbourLoss
 from .BDWNeighbourLoss import BDWNeighbourLoss
 from .EnsembleDWNeighbourLoss import EnsembleDWNeighbourLoss
+from .SoftmaxNeigLoss import SoftmaxNeigLoss
 
 
 __factory = {
@@ -40,6 +41,7 @@ __factory = {
     'dwdevbranch': DistWeightDevBranchLoss,
     'bdwneig': BDWNeighbourLoss,
     'edwneig': EnsembleDWNeighbourLoss,
+    'softneig': SoftmaxNeigLoss,
 }
 
 
