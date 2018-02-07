@@ -24,12 +24,12 @@ model = torch.load(args.r)
 model = model.cuda()
 
 if args.test == 1:
-    print('evaluation on test set of %s with model: %s' %(args.data, args.r))
+    print('test %s  ---  %s' %(args.data, args.r[10:]))
     data = DataSet.create(args.data, train=False)
     data_loader = torch.utils.data.DataLoader(
         data.test, batch_size=8, shuffle=False, drop_last=False)
 else:
-    print('evaluation on train set of %s with model: %s' % (args.data, args.r))
+    print('  train %s --- %s' % (args.data, args.r[10:]))
     data = DataSet.create(args.data, test=False)
     data_loader = torch.utils.data.DataLoader(
         data.train, batch_size=8, shuffle=False, drop_last=False)

@@ -15,7 +15,6 @@ def euclidean_dist(inputs_):
     dist = dist.clamp(min=1e-12).sqrt()  # for numerical stability
     return dist
 
-
 def GaussDistribution(data):
     """
     :param data:
@@ -74,7 +73,7 @@ class SoftmaxNeigLoss(nn.Module):
 
             base = 1.0
             pos_logit = torch.sum(torch.exp(self.alpha*(base - pos_pair)))
-            neg_logit = torch.sum(torch.exp(self.alpha*(base - neg_pair)))/3
+            neg_logit = torch.sum(torch.exp(self.alpha*(base - neg_pair)))/2
 
             loss_ = -torch.log(pos_logit/(pos_logit + neg_logit))
             loss.append(loss_)
