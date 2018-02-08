@@ -63,8 +63,8 @@ class KNNSoftmax(nn.Module):
         err = 0
 
         for i, pos_pair in enumerate(pos_dist):
-            pos_pair = torch.sort(pos_pair)
-            neg_pair = torch.sort(neg_dist[i])
+            pos_pair = pos_pair
+            neg_pair = neg_dist[i]
             pair = torch.cat([pos_pair, neg_pair])
             threshold = torch.sort(pair)[0][self.K+1]
 
