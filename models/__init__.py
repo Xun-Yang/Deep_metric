@@ -1,12 +1,10 @@
 from .inception import inception_v3
 from .BN_Inception import BNInception
-from .Branch_inception import BranchInception
 
 
 __factory = {
     'bn': BNInception,
     'inception': inception_v3,
-    'branch': BranchInception,
 }
 
 
