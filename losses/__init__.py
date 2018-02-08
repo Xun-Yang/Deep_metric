@@ -19,7 +19,7 @@ from .DistWeightNeighbourLoss import DistWeightNeighbourLoss
 from .BDWNeighbourLoss import BDWNeighbourLoss
 from .EnsembleDWNeighbourLoss import EnsembleDWNeighbourLoss
 from .SoftmaxNeigLoss import SoftmaxNeigLoss
-
+from .KNNSoftmax import KNNSoftmax
 
 __factory = {
     'triplet': TripletLoss,
@@ -42,6 +42,7 @@ __factory = {
     'bdwneig': BDWNeighbourLoss,
     'edwneig': EnsembleDWNeighbourLoss,
     'softneig': SoftmaxNeigLoss,
+    'knnsoftmax': KNNSoftmax,
 }
 
 
