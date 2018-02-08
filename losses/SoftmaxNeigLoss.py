@@ -27,7 +27,7 @@ def GaussDistribution(data):
 
 
 class SoftmaxNeigLoss(nn.Module):
-    def __init__(self, alpha=40, margin=1):
+    def __init__(self, alpha=20, margin=1):
         super(SoftmaxNeigLoss, self).__init__()
         self.margin = margin
         self.alpha = alpha
@@ -64,8 +64,8 @@ class SoftmaxNeigLoss(nn.Module):
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
             # pos_pair = pos_pair[:4]
-            pos_neig = pos_pair
-            neg_neig = neg_pair[: 14]
+            pos_neig = pos_pair[: 6]
+            neg_neig = neg_pair[: 18]
 
             if i == 1 and np.random.randint(64) == 1:
                 print('pos_pair is ---------', pos_neig)
@@ -73,7 +73,7 @@ class SoftmaxNeigLoss(nn.Module):
 
             base = 1.0
             pos_logit = torch.sum(torch.exp(self.alpha*(base - pos_pair)))
-            neg_logit = torch.sum(torch.exp(self.alpha*(base - neg_pair)))
+            neg_logit = torch.sum(torch.exp(self.alpha*(base - neg_pair)))/3
 
             loss_ = -torch.log(pos_logit/(pos_logit + neg_logit))
             loss.append(loss_)
