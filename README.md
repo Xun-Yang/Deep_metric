@@ -43,11 +43,6 @@ The download site(https://pan.baidu.com/s/1snmKa1v)
 ## Prerequisites
 - Computer with Linux or OSX
 - [PyTorch](http://pytorch.org)
-  
- # NOTE！！！
-  To exactly reproduce the result in my paper, please make sure to use the same version of pytorch with me: !!! 0.2.0_3
-  there are some problem for other version to load the pretrained model of inception-BN.
-  
 - For training, an NVIDIA GPU is strongly recommended for speed. CPU is supported but training may be slow.
 
 ## Reproducing Car-196 (or CUB-200-2011) experiments
@@ -55,7 +50,7 @@ The download site(https://pan.baidu.com/s/1snmKa1v)
 **With our loss based on fussy clustering:**
 
 ```bash
-sh run_train.sh
+sh run_train_00.sh
 ```
 
 To reproduce other experiments, you can edit the run_train.sh file by yourself.
