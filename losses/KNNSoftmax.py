@@ -28,7 +28,7 @@ def GaussDistribution(data):
 
 
 class KNNSoftmax(nn.Module):
-    def __init__(self, alpha=50, margin=1, K=16):
+    def __init__(self, alpha=30, margin=1, K=16):
         super(KNNSoftmax, self).__init__()
         self.margin = margin
         self.alpha = alpha
