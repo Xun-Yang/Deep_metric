@@ -54,3 +54,7 @@ sh run_train_00.sh
 ```
 
 To reproduce other experiments, you can edit the run_train.sh file by yourself.
+
+
+
+Future work: I will make the code more clear before 2018 - 4 - 15 . and also share my experiment results. 
