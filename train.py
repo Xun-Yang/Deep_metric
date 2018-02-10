@@ -14,7 +14,7 @@ import DataSet
 cudnn.benchmark = True
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
-parser.add_argument('-data', default='cub', required=True,
+parser.add_argument('-data', default='car', required=True,
                     help='path to dataset')
 parser.add_argument('-loss', default='branch', required=True,
                     help='loss for training network')

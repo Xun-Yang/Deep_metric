@@ -1,6 +1,6 @@
 from __future__ import absolute_import, print_function
 import os
-import torchvision.transforms as transforms
+from DataSet import transforms
 import torchvision.datasets as datasets
 
 
@@ -12,7 +12,7 @@ class Car196:
 
         if transform is None:
             transform = [transforms.Compose([
-                transforms.CovertBGR(),
+#                transforms.CovertBGR(),
                 transforms.Resize(256),
                 transforms.RandomResizedCrop(227),
                 transforms.RandomHorizontalFlip(),
@@ -21,7 +21,7 @@ class Car196:
                                      std=3 * [std_value]),
             ]),
                 transforms.Compose([
-                    transforms.CovertBGR(),
+ #                   transforms.CovertBGR(),
                     transforms.Resize(256),
                     transforms.CenterCrop(227),
                     transforms.ToTensor(),

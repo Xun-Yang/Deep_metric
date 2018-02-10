@@ -62,7 +62,6 @@ class BinDevianceLoss(nn.Module):
                 print('neg_pair is ---------', neg_pair)
                 print('pos_pair is ---------', pos_pair.data)
             pos_loss = torch.mean(torch.log(1 + torch.exp(-2*(pos_pair - self.margin))))
-
             neg_loss = 0.04*torch.mean(torch.log(1 + torch.exp(50*(neg_pair - self.margin))))
             loss.append(pos_loss + neg_loss)
 
