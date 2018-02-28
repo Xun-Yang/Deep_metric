@@ -42,7 +42,8 @@ The download site(https://pan.baidu.com/s/1snmKa1v)
 
 ## Prerequisites
 - Computer with Linux or OSX
-- [PyTorch](http://pytorch.org)
+- Python : 3.5.2 
+- [PyTorch](http://pytorch.org)  : (0.2.03)
 - For training, an NVIDIA GPU is strongly recommended for speed. CPU is supported but training may be slow.
 
 ## Reproducing Car-196 (or CUB-200-2011) experiments
