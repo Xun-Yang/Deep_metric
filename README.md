@@ -37,9 +37,7 @@ https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metr
 Inceptionn BN network as other metric learning papers do
 The download site(http://data.lip6.fr/cadene/pretrainedmodels/bn_inception-239d2248.pth)
 
-~~(to save your time, we already download them down and put on my Baidu YunPan.We also put inception v3 in the Baidu YunPan, the performance of inception v-3 is a little worse(about 1.5% on recall@1 ) than inception BN on CUB/Car datasets.)
-
-
+~~(to save your time, we already download them down and put on my Baidu YunPan.We also put inception v3 in the Baidu YunPan, the performance of inception v-3 is a little worse(about 1.5% on recall@1 ) than inception BN on CUB/Car datasets.)~~
 ## Prerequisites
 - Computer with Linux or OSX
 - Python : 3.5.2 
