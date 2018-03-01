@@ -34,11 +34,12 @@ https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metr
 
 ## Pretrained models in Pytorch
 
-Inceptionn BN network as other metric learning papers do, to save your time, we already download them down and put on my Baidu YunPan.
+Inceptionn BN network as other metric learning papers do
+( to save your time, we already download them down and put on my Baidu YunPan.We also put inception v3 in the Baidu YunPan, the performance of inception v-3 is a little worse(about 1.5% on recall@1 ) than inception BN on CUB/Car datasets.)
 
-We also put inception v3 in the Baidu YunPan, the performance of inception v-3 is a little worse(about 1.5% on recall@1 ) than inception BN on CUB/Car datasets.
+The download site(http://data.lip6.fr/cadene/pretrainedmodels/bn_inception-239d2248.pth)
 
-The download site(https://pan.baidu.com/s/1snmKa1v)
+
 
 ## Prerequisites
 - Computer with Linux or OSX
