@@ -101,7 +101,6 @@ If you have finetuned the model to have better performance than below, please te
 |Pool5-256dim L2|47.0|
 |Pool5-128dim L2|42.0|
 |Pool5-64dim L2|32.0|
-
 |Contrastive Loss||
 |NeighbourHardLoss||
 |NeighbourLoss||
