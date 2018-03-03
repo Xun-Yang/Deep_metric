@@ -15,7 +15,6 @@ def euclidean_dist(inputs_):
     dist = dist.clamp(min=1e-12).sqrt()  # for numerical stability
     return dist
 
-
 def GaussDistribution(data):
     """
     :param data:
@@ -27,10 +26,10 @@ def GaussDistribution(data):
     return mean_value, std
 
 
-class NeighbourLoss(nn.Module):
-    def __init__(self, k=1, alpha=1, margin=1):
-        super(NeighbourLoss, self).__init__()
-        self.margin = margin
+class SoftmaxNeigLoss(nn.Module):
+    def __init__(self, alpha=50):
+        super(SoftmaxNeigLoss, self).__init__()
+        self.alpha = alpha
         self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
 
     def forward(self, inputs, targets):
@@ -63,29 +62,22 @@ class NeighbourLoss(nn.Module):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
-            pos_pair = pos_pair[0]
-            
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[0] + 0.1)
+            # pos_pair = pos_pair[:4]
+            pos_neig = pos_pair[: 5]
+            neg_neig = neg_pair[: 15]
 
-            if len(neg_pair) > 0:
-                if i == 1 and np.random.randint(99) == 1:
-                        # and np.random.randint(256) == 1:
-                    print('neg_pair is ---------', neg_pair)
-                    print('pos_pair is ---------', pos_pair.data)
+            if i == 1 and np.random.randint(64) == 1:
+                print('pos_pair is ---------', pos_neig)
+                print('neg_pair is ---------', neg_neig)
 
-                # neg_base = torch.sum(torch.exp(-10*(neg_pair - 1))*neg_pair)/torch.sum(torch.exp(-10*(neg_pair - 1)))
-                # base = 0.5*(pos_pair + neg_base).data[0]
-                base = self.margin
-                #neg_loss = 0.5 * torch.mean(torch.log(1 + torch.exp(2*(base - neg_pair))))
-                loss.append(pos_pair - torch.mean(neg_pair) + 0.05)
-                err += 1
-            else:
-                continue
-            
-        if len(loss) == 0:
-            loss = 0.0 * (torch.mean(pos_pair))
-        else:
-            loss = torch.sum(torch.cat(loss))/n
+            base = 1.0
+            pos_logit = torch.sum(torch.exp(self.alpha*(base - pos_pair)))
+            neg_logit = torch.sum(torch.exp(self.alpha*(base - neg_pair)))/2
+
+            loss_ = -torch.log(pos_logit/(pos_logit + neg_logit))
+            loss.append(loss_)
+
+        loss = torch.mean(torch.cat(loss))
 
         prec = 1 - float(err)/n
         neg_d = torch.mean(neg_dist).data[0]
@@ -106,7 +98,7 @@ def main():
     y_ = 8*list(range(num_class))
     targets = Variable(torch.IntTensor(y_))
 
-    print(NeighbourLoss(margin=0.1)(inputs, targets))
+    print(SoftmaxNeigLoss(margin=0.1)(inputs, targets))
 
 
 if __name__ == '__main__':

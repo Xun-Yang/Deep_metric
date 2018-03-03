@@ -1,3 +1,8 @@
+from __future__ import print_function, absolute_import
+
+from .SoftmaxNeigLoss import SoftmaxNeigLoss
+from .KNNSoftmax import KNNSoftmax
+from .NeighbourLoss import NeighbourLoss
 from .triplet import TripletLoss
 from .CenterTriplet import CenterTripletLoss
 from .GaussianMetric import GaussianMetricLoss
@@ -18,15 +23,16 @@ from .DistWeightDevBranchLoss import DistWeightDevBranchLoss
 from .DistWeightNeighbourLoss import DistWeightNeighbourLoss
 from .BDWNeighbourLoss import BDWNeighbourLoss
 from .EnsembleDWNeighbourLoss import EnsembleDWNeighbourLoss
-from .SoftmaxNeigLoss import SoftmaxNeigLoss
-from .KNNSoftmax import KNNSoftmax
+
 
 __factory = {
+    'softneig': SoftmaxNeigLoss,
+    'knnsoftmax': KNNSoftmax,
+    'neighbour': NeighbourLoss,
     'triplet': TripletLoss,
     'histogram': HistogramLoss,
     'gaussian': GaussianMetricLoss,
     'batchall': BatchAllLoss,
-    'neighbour': NeighbourLoss,
     'neighard': NeighbourHardLoss,
     'bin': BinDevianceLoss,
     'binbranch': BinBranchLoss,
@@ -41,9 +47,26 @@ __factory = {
     'dwdevbranch': DistWeightDevBranchLoss,
     'bdwneig': BDWNeighbourLoss,
     'edwneig': EnsembleDWNeighbourLoss,
-    'softneig': SoftmaxNeigLoss,
-    'knnsoftmax': KNNSoftmax,
 }
+
+
+def names():
+    return sorted(__factory.keys())
+
+
+def create(name, *args, **kwargs):
+    """
+    Create a loss instance.
+
+    Parameters
+    ----------
+    name : str
+        the name of loss function
+    """
+    if name not in __factory:
+        raise KeyError("Unknown loss:", name)
+    return __factory[name](*args, **kwargs)
+
 
 
 def names():
