@@ -23,16 +23,18 @@ https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metr
 
   I think my implement is better than the sampling way in the paper.
 
--  KNNSoftmax [" Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structure"] Ruslan Salakhutdinov and Geoffrey Hinton
+-  ##### KNNSoftmax (ONCA LOSS)
+
+<<Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structur>> Ruslan Salakhutdinov and Geoffrey Hinton
 
   Though the method is more than 10 years old, It has best performance.
 
   (R@1 is higher 0.61 on  CUB without test augment with Dim 512 finetuned on pretrained inception-v2)
 
 - And I have a lot of "wrong" ideas during research the DML problems,
-I keep them there but no description will be given.
-You can see the code by yourself, the code is clear and easy.
-If you have any question about these losses not mentioned above,
+I keep them here without description.
+You can see the code by yourself, the code is clear and easy for understanding.
+If you have any question about losses that  not been mentioned above,
 Feel free to ask me.
 
 
