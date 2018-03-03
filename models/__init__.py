@@ -1,12 +1,11 @@
 from .inception import inception_v3
 from .BN_Inception import BNInception
-from .Branch_inception import BranchInception
-
+from .resnet import resnet50
 
 __factory = {
     'bn': BNInception,
     'inception': inception_v3,
-    'branch': BranchInception,
+    'resnet50': resnet50,
 }
 
 
