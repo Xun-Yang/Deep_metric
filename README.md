@@ -68,8 +68,9 @@ Feel free to ask me.
 
 ## Pretrained models in Pytorch
 
-Inceptionn BN network as other metric learning papers do
-The download site(http://data.lip6.fr/cadene/pretrainedmodels/bn_inception-239d2248.pth)
+Pre-trained Inceptionn-BN(inception-v2) used in most deep metric learning papers
+
+Download site: http://data.lip6.fr/cadene/pretrainedmodels/bn_inception-239d2248.pth
 
 ~~(to save your time, we already download them down and put on my Baidu YunPan.We also put inception v3 in the Baidu YunPan, the performance of inception v-3 is a little worse(about 1.5% on recall@1 ) than inception BN on CUB/Car datasets.)~~
 ## Prerequisites
@@ -84,6 +85,34 @@ Please create a env as follows:
 - Python : 3.5.2 
 - [PyTorch](http://pytorch.org)  : (0.2.03)
 
+
+
+## Performance of Loss:
+
+To be clear and simple, I only provide Rank@1 on CUB-200 DataSet without test augment. Because, in most case, more higher the Rank@1 is,  more higher the Rank@K.
+And better performance on CUB also means better performance on Car-196 , Product-online and other data sets.
+If you have finetuned the model to have better performance than below, please tell me, I will update the result here.
+
+
+|Loss Function| Rank@1(%)|
+|---|---
+|Pool5-L2|52.4|
+|Pool5-512dim L2|49.2|
+|Pool5-256dim L2|47.0|
+|Pool5-128dim L2|42.0|
+|Pool5-64dim L2|32.0|
+
+|Contrastive Loss||
+|NeighbourHardLoss||
+|NeighbourLoss||
+|||
+|BinDeviance Loss|51.3|
+|HistogramLoss| |
+|DistWeightDeviance Loss|51.6|
+|SoftmaxNeig Loss|56.3|
+|KNNSoftmax(ONCA) Loss|60.7|
+
+Pool5-512(64, 128, 256)dim L2 means the feature is transformed from Pool5 via a orthogonal transform.
 
 ## Reproducing Car-196 (or CUB-200-2011) experiments
 
