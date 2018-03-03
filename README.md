@@ -5,33 +5,44 @@
 
 ## Pytorch Code for deep metric methods:
 
-- ["Lifted Structure Loss"](
-https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metric_Learning_CVPR_2016_paper.pdf)
+- Lifted Structure Loss
+(https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metric_Learning_CVPR_2016_paper.pdf)
 
         -wait to be done in future
 
 - Contrasstive Loss
 
-- Batch-All-Loss and Batch-Hard-Loss in ["In Defense of Triplet Loss in ReID"](https://arxiv.org/abs/1703.07737)
+- Batch-All-Loss and Batch-Hard-Loss
+
+ [In Defense of Triplet Loss in ReI](https://arxiv.org/abs/1703.07737)
 
 
-- HistogramLoss :  ["Learning Deep Embeddings with Histogram Loss"](https://arxiv.org/abs/1611.00822)
+- HistogramLoss
 
-- BinDevianceLoss : baseline method in BIER(Deep Metric Learning with BIER: Boosting Independent Embeddings Robustly)
+ Learning Deep Embeddings with Histogram Loss(https://arxiv.org/abs/1611.00822)
 
-- DistWeightDevianceLoss (my implement of the sampling way in <<sampling matters in deep embedding learning >> combined with BinDevianceLoss)
+- BinDevianceLoss
 
-  I think my implement is better than the sampling way in the paper.
+ baseline method in BIER(Deep Metric Learning with BIER: Boosting Independent Embeddings Robustly)
 
--  ##### KNNSoftmax (ONCA LOSS)
+- DistWeightDevianceLoss
+
+  my own implement of the sampling way in <<sampling matters in deep embedding learning >> combined with BinDevianceLoss
+
+  I think my implement is more reasonable and more flexible than the original sampling way in the paper in some way.
+
+- KNNSoftmax (ONCA LOSS)
+
 
 <<Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structur>> Ruslan Salakhutdinov and Geoffrey Hinton
 
+
   Though the method is more than 10 years old, It has best performance.
 
-  (R@1 is higher 0.61 on  CUB without test augment with Dim 512 finetuned on pretrained inception-v2)
 
-- And I have a lot of "wrong" ideas during research the DML problems,
+  R@1 is higher 0.61 on  CUB without test augment with Dim 512 finetuned on pretrained inception-v2
+
+- PS: And I have a lot of "wrong" ideas during research the DML problems,
 I keep them here without description.
 You can see the code by yourself, the code is clear and easy for understanding.
 If you have any question about losses that  not been mentioned above,
