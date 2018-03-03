@@ -8,13 +8,23 @@
 - ["Lifted Structure Loss"](
 https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metric_Learning_CVPR_2016_paper.pdf)
 
-- Contrasstive Loss 
+ wait to be done in future
+
+- Contrasstive Loss
 
 - Batch-All-Loss and Batch-Hard-Loss in ["In Defense of Triplet Loss in ReID"](https://arxiv.org/abs/1703.07737)
 
-- New Positive Mining Loss based on Fuzzy Clustering 
+- HistogramLoss ["Learning Deep Embeddings with Histogram Loss"](https://arxiv.org/abs/1611.00822)
 
-   [comparable results on standard metric learning Datasets]
+- BinDevianceLoss baseline method in BIER(Deep Metric Learning with BIER: Boosting Independent Embeddings Robustly)
+
+- DistWeightDevianceLoss (my implement of the sampling way in <<sampling matters in deep embedding learning >> combined with BinDevianceLoss)
+  I think my implement is better than the sampling way in the paper.
+
+-  KNNSoftmax [" Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structure"] Ruslan Salakhutdinov and Geoffrey Hinton
+  Though the method is more than 10 years old, It has best performance.
+  (R@1 is higher 0.61 on  CUB without test augment with Dim 512 finetuned on pretrained inception-v2)
+
 
 ## Dataset
 - [Car-196](http://ai.stanford.edu/~jkrause/cars/car_devkit.tgz)
@@ -39,10 +49,17 @@ The download site(http://data.lip6.fr/cadene/pretrainedmodels/bn_inception-239d2
 
 ~~(to save your time, we already download them down and put on my Baidu YunPan.We also put inception v3 in the Baidu YunPan, the performance of inception v-3 is a little worse(about 1.5% on recall@1 ) than inception BN on CUB/Car datasets.)~~
 ## Prerequisites
+
 - Computer with Linux or OSX
+- For training, an NVIDIA GPU is strongly recommended for speed. CPU is supported but training may be slow.
+
+The pre-trained model inception-v2 is transferred from Caffe, it only can be worked on specific version of Pytorch or Python,
+I do not figure out why, and do not which version is best, but if you want to get similar persormance as me
+Please create a env as follows:
+
 - Python : 3.5.2 
 - [PyTorch](http://pytorch.org)  : (0.2.03)
-- For training, an NVIDIA GPU is strongly recommended for speed. CPU is supported but training may be slow.
+
 
 ## Reproducing Car-196 (or CUB-200-2011) experiments
 
