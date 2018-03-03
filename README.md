@@ -32,7 +32,7 @@
 
   I think my implement is more reasonable and more flexible than the original sampling way in the paper.
 
-- KNNSoftmax (ONCA LOSS)
+- KNNSoftmax (ONCA Loss)
 
 
    Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structur  -Ruslan Salakhutdinov and Geoffrey Hinton
@@ -87,7 +87,7 @@ Please create a env as follows:
 
 ## Reproducing Car-196 (or CUB-200-2011) experiments
 
-**With our loss based on fussy clustering:**
+**With  ONCA Loss (KNNSoftmax Loss) :**
 
 ```bash
 sh run_train_00.sh
@@ -95,6 +95,9 @@ sh run_train_00.sh
 
 To reproduce other experiments, you can edit the run_train.sh file by yourself.
 
+Notice:
+the train.py should be modified a little when you used other loss functions.
+I will address the problem in these days.
 
 
 Future work: I will make the code more clear before 2018 - 4 - 15 . and also share my experiment results. 

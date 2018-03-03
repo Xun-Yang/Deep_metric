@@ -1,6 +1,6 @@
 from __future__ import absolute_import, print_function
 import os
-import torchvision.transforms as transforms
+import DataSet as transforms
 import torchvision.datasets as datasets
 
 

@@ -42,7 +42,6 @@ features, labels = extract_features(model, data_loader, print_freq=999, metric=N
 # num_class = len(set(labels))
 # print('number of classes is :', num_class)
 # print('compute the NMI index:', NMI(features, labels, n_cluster=num_class))
-
 # print(len(features))
 # sim_mat = pairwise_similarity(features)
 #  to google net pooling-5

@@ -12,7 +12,7 @@ class Car196:
 
         if transform is None:
             transform = [transforms.Compose([
-#                transforms.CovertBGR(),
+                transforms.CovertBGR(),
                 transforms.Resize(256),
                 transforms.RandomResizedCrop(227),
                 transforms.RandomHorizontalFlip(),
@@ -21,7 +21,7 @@ class Car196:
                                      std=3 * [std_value]),
             ]),
                 transforms.Compose([
- #                   transforms.CovertBGR(),
+                    transforms.CovertBGR(),
                     transforms.Resize(256),
                     transforms.CenterCrop(227),
                     transforms.ToTensor(),
@@ -38,3 +38,4 @@ class Car196:
             self.train = datasets.ImageFolder(traindir, transform[0])
         if test:
             self.test = datasets.ImageFolder(testdir, transform[1])
+

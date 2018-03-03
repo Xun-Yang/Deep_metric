@@ -5,7 +5,7 @@ from .Products import Products
 __factory = {
     'cub': CUB200,
     'car': Car196,
-    'products': Products,
+    'product': Products,
 }
 
 
