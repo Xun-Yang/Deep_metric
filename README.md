@@ -5,29 +5,30 @@
 
 ## Pytorch Code for deep metric methods:
 
-- Lifted Structure Loss
-(https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metric_Learning_CVPR_2016_paper.pdf)
-
-        -wait to be done in future
-
 - Contrasstive Loss
+
+- Lifted Structure Loss
+[](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metric_Learning_CVPR_2016_paper.pdf)
+
+    wait to be done in future
+
 
 - Batch-All-Loss and Batch-Hard-Loss
 
- [In Defense of Triplet Loss in ReI](https://arxiv.org/abs/1703.07737)
+    2 Loss Functions in [In Defense of Triplet Loss in ReID](https://arxiv.org/abs/1703.07737)
 
 
 - HistogramLoss
 
- Learning Deep Embeddings with Histogram Loss(https://arxiv.org/abs/1611.00822)
+    [Learning Deep Embeddings with Histogram Loss](https://arxiv.org/abs/1611.00822)
 
 - BinDevianceLoss
 
- baseline method in BIER(Deep Metric Learning with BIER: Boosting Independent Embeddings Robustly)
+    Baseline method in BIER(Deep Metric Learning with BIER: Boosting Independent Embeddings Robustly)
 
 - DistWeightDevianceLoss
 
-  my own implement of the sampling way in <<sampling matters in deep embedding learning >> combined with BinDevianceLoss
+  My own implement of the sampling way in [sampling matters in deep embedding learning](https://arxiv.org/abs/1706.07567) combined with BinDevianceLoss
 
   I think my implement is more reasonable and more flexible than the original sampling way in the paper in some way.
 
