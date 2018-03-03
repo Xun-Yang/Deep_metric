@@ -30,12 +30,12 @@
 
   My own implement of the sampling way in [sampling matters in deep embedding learning](https://arxiv.org/abs/1706.07567) combined with BinDevianceLoss
 
-  I think my implement is more reasonable and more flexible than the original sampling way in the paper in some way.
+  I think my implement is more reasonable and more flexible than the original sampling way in the paper.
 
 - KNNSoftmax (ONCA LOSS)
 
 
-<<Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structur>> Ruslan Salakhutdinov and Geoffrey Hinton
+   Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structur  -Ruslan Salakhutdinov and Geoffrey Hinton
 
 
   Though the method is more than 10 years old, It has best performance.
