@@ -78,13 +78,14 @@ Download site: http://data.lip6.fr/cadene/pretrainedmodels/bn_inception-239d2248
 - Computer with Linux or OSX
 - For training, an NVIDIA GPU is strongly recommended for speed. CPU is supported but training may be slow.
 
-The pre-trained model inception-v2 is transferred from Caffe, it only can be worked on specific version of Pytorch or Python,
-I do not figure out why, and do not which version is best, but if you want to get similar persormance as me
-Please create a env as follows:
+#### Attention!!
+The pre-trained model inception-v2 is transferred from Caffe, it can only  work normally on specific version of Pytorch or Python.
+I do not figure out why, and do not which version is best(the code can be run without bug, but the performance is bad), but if you want to get similar performance as me
+Please create an env as follows:
 
-- Python : 3.5.2 
+- Python : 3.5.2 (2.7 may be ok, too)
 - [PyTorch](http://pytorch.org)  : (0.2.03)
-
+(I have tried 0.3.0 and 0.1.0,  performance is lower than 0.2.03 by 10% on rank@1)
 
 
 ## Performance of Loss:
