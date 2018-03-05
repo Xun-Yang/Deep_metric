@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import os
 import errno
 
-import scipy.io as sio
+# import scipy.io as sio
 import os.path as osp
 import shutil
 
@@ -14,32 +14,37 @@ def mkdir_if_missing(dir_path):
         if e.errno != errno.EEXIST:
             raise
 
-path = 'Car196/cars_annos.mat'
-file = sio.loadmat(path)
-annotations = file['annotations'][0]
+train_txt = 'Stanford_Online_Products/Ebay_train.txt'
+test_txt = 'Stanford_Online_Products/Ebay_test.txt'
+
+train_root = 'Products/train'
+test_root = 'Products/test'
+
+start_root = 'Products'
+
+mkdir_if_missing(start_root)
+
+# train
+f = open(train_txt)
+annotations = f.readlines()
+
+for annotation in annotations[1:]:
+    annotation = annotation.split(' ')
+    label = int(annotation[1])
+    origin_img = osp.join('Stanford_Online_Products', annotation[-1][:-1])
+    to_path = osp.join(train_root, '%d' % label)
+    mkdir_if_missing(to_path)
+    shutil.copy(origin_img, to_path)
 
 
-# print(annotations)
+# test
+f = open(test_txt)
+annotations = f.readlines()
 
-to_root = ['Car196/train', 'Car196/test']
-start_root = 'Car196'
-for i in range(2):
-    mkdir_if_missing(to_root[i])
-
-labels = []
-for annotation in annotations:
-    # print(annotation)
-    label = annotation[-2][0][0]
-    frame = annotation[0][0]
-    # print(40*'#', label, frame)
-    # print(label)
-
-    origin_img = osp.join(start_root, frame)
-    # print(origin_img)
-    if label < 99:
-        to_path = osp.join(to_root[0], '%d' % label)
-    else:
-        to_path = osp.join(to_root[1], '%d' % label)
-    # print(to_path)
+for annotation in annotations[1:]:
+    annotation = annotation.split(' ')
+    label = int(annotation[1])
+    origin_img = osp.join('Stanford_Online_Products', annotation[-1][:-1])
+    to_path = osp.join(test_root, '%d' % label)
     mkdir_if_missing(to_path)
     shutil.copy(origin_img, to_path)
