@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-CUDA_VISIBLE_DEVICES=2 python train.py -data cub -net bn  -alpha 40  -lr 1e-6 -dim 512   -num_instances 8 -BatchSize 128  -loss knnsoftmax  -epochs 601 -log_dir knnsoftmax  -save_step 50
+CUDA_VISIBLE_DEVICES=5 python train.py -data cub -net bn  -alpha 40 -k 100  -lr 1e-6 -dim 512   -num_instances 8 -BatchSize 128  -loss knnsoftmax  -epochs 601 -log_dir knnsoftmax  -save_step 50
 python test.py -r checkpoints/knnsoftmax/model.pkl  >knnsoftmax.txt
 python test.py -r checkpoints/knnsoftmax/50_model.pkl  >>knnsoftmax.txt
 python test.py -r checkpoints/knnsoftmax/100_model.pkl  >>knnsoftmax.txt

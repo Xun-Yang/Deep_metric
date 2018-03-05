@@ -496,7 +496,7 @@ class BNInception(nn.Module):
 class Embedding(nn.Module):
     def __init__(self, in_dim, out_dim, dropout=None, normalized=True):
         super(Embedding, self).__init__()
-        self.bn = nn.BatchNorm2d(in_dim, eps=0.001)
+        self.bn = nn.BatchNorm2d(in_dim, eps=1e-5)
         self.linear = nn.Linear(in_features=in_dim, out_features=out_dim)
         self.dropout = dropout
         self.normalized = normalized
