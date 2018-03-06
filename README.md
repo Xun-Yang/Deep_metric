@@ -105,11 +105,12 @@ If you have finetuned the model to have better performance than below, please te
 |NeighbourHardLoss||
 |NeighbourLoss||
 |||
-|BinDeviance Loss|51.3|
+|BinDeviance Loss 512dim|51.3|
 |HistogramLoss| |
 |DistWeightDeviance Loss|51.6|
 |SoftmaxNeig Loss|56.3|
-|KNNSoftmax(ONCA) Loss|60.7|
+|KNNSoftmax(ONCA) Loss - 512dim|60.7|
+|KNNSoftmax(ONCA) Loss - 128dim|58.4|
 
 Pool5-512(64, 128, 256)dim L2 means the feature is transformed from Pool5 via a orthogonal transform.
 
