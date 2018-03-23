@@ -43,7 +43,7 @@ def Recall_at_ks(sim_mat, query_ids=None, gallery_ids=None):
     num_valid = np.zeros(4)
     for i in range(m):
         x = sim_mat[i]
-        indice = heapq.nlargest(8, range(len(x)), x.take)    
+        indice = heapq.nlargest(16, range(len(x)), x.take)
         if query_ids[i] == gallery_ids[indice[0]]:
             num_valid += 1
         elif query_ids[i] == gallery_ids[indice[1]]:
@@ -51,7 +51,7 @@ def Recall_at_ks(sim_mat, query_ids=None, gallery_ids=None):
         elif query_ids[i] in gallery_ids[indice[1:4]]:
             num_valid[2:] += 1
         elif query_ids[i] in gallery_ids[indice[4:]]:
-            num_valid[3] += 1
+            num_valid[3:] += 1
     return num_valid/float(m)
 
 
@@ -89,16 +89,18 @@ def Recall_at_ks_products(sim_mat, query_ids=None, gallery_ids=None):
 
     # Sort and find correct matches
     # indice = np.argsort(sim_mat, axis=1)
-    num_valid = np.zeros(3)
+    num_valid = np.zeros(4)
     for i in range(m):
         x = sim_mat[i]
-        indice = heapq.nlargest(100, range(len(x)), x.take)
+        indice = heapq.nlargest(1000, range(len(x)), x.take)
         if query_ids[i] == gallery_ids[indice[0]]:
             num_valid += 1
         elif query_ids[i] in gallery_ids[indice[1:10]]:
             num_valid[1:] += 1
-        elif query_ids[i] in gallery_ids[indice[10:]]:
-            num_valid[2] += 1
+        elif query_ids[i] in gallery_ids[indice[10:100]]:
+            num_valid[2:] += 1
+        elif query_ids[i] in gallery_ids[indice[100:]]:
+            num_valid[3] += 1
     return num_valid/float(m)
 
 def main():

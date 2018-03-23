@@ -10,6 +10,7 @@ import models
 import losses
 from utils import RandomIdentitySampler, mkdir_if_missing, logging, display, orth_reg
 import DataSet
+import numpy as np
 cudnn.benchmark = True
 
 
@@ -69,7 +70,7 @@ def main(args):
 
     optimizer = torch.optim.Adam(param_groups, lr=args.lr,
                                  weight_decay=args.weight_decay)
-    criterion = losses.create(args.loss, alpha=args.alpha, k=args.k).cuda()
+    criterion = losses.create(args.loss, k=args.k).cuda()
 
     data = DataSet.create(args.data, root=None, test=False)
     train_loader = torch.utils.data.DataLoader(
@@ -77,8 +78,19 @@ def main(args):
         sampler=RandomIdentitySampler(data.train, num_instances=args.num_instances),
         drop_last=True, num_workers=args.nThreads)
 
+    # save the train information
+    epoch_list = list()
+    loss_list = list()
+    pos_list = list()
+    neg_list = list()
+
     for epoch in range(args.start, args.epochs):
+        epoch_list.append(epoch)
+
         running_loss = 0.0
+        running_pos = 0.0
+        running_neg = 0.0
+
         for i, data in enumerate(train_loader, 0):
             inputs, labels = data
             # wrap them in Variable
@@ -94,16 +106,25 @@ def main(args):
                 loss = orth_reg(model, loss, cof=args.orth)
             loss.backward()
             optimizer.step()
+
             running_loss += loss.data[0]
+            running_neg += dist_an
+            running_pos += dist_ap
+
             if epoch == 0 and i == 0:
                 print(50*'#')
                 print('Train Begin -- HA-HA-HA')
+
+        loss_list.append(running_loss)
+        pos_list.append(running_pos/i)
+        neg_list.append(running_neg/i)
 
         print('[Epoch %05d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
               % (epoch + 1,  running_loss, inter_, dist_ap, dist_an))
 
         if epoch % args.save_step == 0:
             torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
+    np.savez(os.path.join(log_dir, "result.npz"), epoch=epoch_list, loss=loss_list, pos=pos_list, neg=neg_list)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='KNN-Softmax Training')
@@ -118,7 +139,7 @@ if __name__ == '__main__':
                         help='dimension of embedding space')
     parser.add_argument('-alpha', default=30, type=int, metavar='n',
                         help='hyper parameter in KNN Softmax')
-    parser.add_argument('-k', default=16, type=int, metavar='n',
+    parser.add_argument('-k', default=1, type=int, metavar='n',
                         help='number of neighbour points in KNN')
     parser.add_argument('-init', default='random',
                         help='the initialization way of FC layer')

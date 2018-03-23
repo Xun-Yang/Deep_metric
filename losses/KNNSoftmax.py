@@ -8,13 +8,10 @@ import numpy as np
 
 
 class KNNSoftmax(nn.Module):
-    def __init__(self, alpha=30, margin=1, k=16):
+    def __init__(self, alpha=30, k=16):
         super(KNNSoftmax, self).__init__()
-        self.margin = margin
         self.alpha = alpha
         self.K = k
-
-        self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
 
     def forward(self, inputs, targets):
         n = inputs.size(0)
@@ -60,7 +57,7 @@ class KNNSoftmax(nn.Module):
             if len(pos_neig) == 0:
                 pos_neig = pos_pair[0]
 
-            if i == 1 and np.random.randint(64) == 1:
+            if i == 1 and np.random.randint(1024) == 1:
                 print('pos_pair is ---------', pos_neig)
                 print('neg_pair is ---------', neg_neig)
 

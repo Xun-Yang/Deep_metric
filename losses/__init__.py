@@ -23,6 +23,8 @@ from .DistWeightDevBranchLoss import DistWeightDevBranchLoss
 from .DistWeightNeighbourLoss import DistWeightNeighbourLoss
 from .BDWNeighbourLoss import BDWNeighbourLoss
 from .EnsembleDWNeighbourLoss import EnsembleDWNeighbourLoss
+from .BranchKNNSoftmax import BranchKNNSoftmax
+from .JSDivKNNSoftmaxLoss import JSDivKNNSoftmaxLoss
 
 
 __factory = {
@@ -47,6 +49,8 @@ __factory = {
     'dwdevbranch': DistWeightDevBranchLoss,
     'bdwneig': BDWNeighbourLoss,
     'edwneig': EnsembleDWNeighbourLoss,
+    'branchKS': BranchKNNSoftmax,
+    'JSDivKS': JSDivKNNSoftmaxLoss,
 }
 
 

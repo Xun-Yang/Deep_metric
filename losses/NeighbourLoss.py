@@ -16,22 +16,12 @@ def euclidean_dist(inputs_):
     return dist
 
 
-def GaussDistribution(data):
-    """
-    :param data:
-    :return:
-    """
-    mean_value = torch.mean(data)
-    diff = data - mean_value
-    std = torch.sqrt(torch.mean(torch.pow(diff, 2)))
-    return mean_value, std
-
-
 class NeighbourLoss(nn.Module):
-    def __init__(self, k=1, alpha=1, margin=1):
+    # It is actually the online version LMNN
+    def __init__(self, k=1, margin=0.1):
         super(NeighbourLoss, self).__init__()
+        self.k = k
         self.margin = margin
-        self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
 
     def forward(self, inputs, targets):
         n = inputs.size(0)
@@ -63,21 +53,17 @@ class NeighbourLoss(nn.Module):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
-            pos_pair = pos_pair[0]
+            pos_pair = pos_pair[:self.k]
             
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[0] + 0.1)
+            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_pair[-1] + self.margin)
 
             if len(neg_pair) > 0:
                 if i == 1 and np.random.randint(99) == 1:
                         # and np.random.randint(256) == 1:
-                    print('neg_pair is ---------', neg_pair)
+                    print('neg_pair is ---------', neg_pair.data)
                     print('pos_pair is ---------', pos_pair.data)
 
-                # neg_base = torch.sum(torch.exp(-10*(neg_pair - 1))*neg_pair)/torch.sum(torch.exp(-10*(neg_pair - 1)))
-                # base = 0.5*(pos_pair + neg_base).data[0]
-                base = self.margin
-                #neg_loss = 0.5 * torch.mean(torch.log(1 + torch.exp(2*(base - neg_pair))))
-                loss.append(pos_pair - torch.mean(neg_pair) + 0.05)
+                loss.append(torch.mean(pos_pair) - torch.mean(neg_pair) + self.margin)
                 err += 1
             else:
                 continue
@@ -92,26 +78,4 @@ class NeighbourLoss(nn.Module):
         pos_d = torch.mean(pos_dist).data[0]
 
         return loss, prec, pos_d, neg_d
-
-
-def main():
-    data_size = 32
-    input_dim = 3
-    output_dim = 2
-    num_class = 4
-    # margin = 0.5
-    x = Variable(torch.rand(data_size, input_dim), requires_grad=False)
-    w = Variable(torch.rand(input_dim, output_dim), requires_grad=True)
-    inputs = x.mm(w)
-    y_ = 8*list(range(num_class))
-    targets = Variable(torch.IntTensor(y_))
-
-    print(NeighbourLoss(margin=0.1)(inputs, targets))
-
-
-if __name__ == '__main__':
-    main()
-    print('Congratulations to you!')
-
-
 

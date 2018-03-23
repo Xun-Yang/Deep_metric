@@ -4,6 +4,7 @@ from __future__ import print_function, absolute_import
 def display(args):
     #  Display information of current training
     print('Learn Rate  \t%.1e' % args.lr)
+    print('Epochs  \t%05d' % args.epochs)
     print('Log Path \t%s' % args.log_dir)
     print('Network \t %s' % args.net)
     print('Data Set \t %s' % args.data)
@@ -13,7 +14,7 @@ def display(args):
 
     print('Loss Function \t%s' % args.loss)
     print('Number of Neighbour \t%d' % args.k)
-    print('Alpha in KNN-Softmax \t %d' % args.alpha)
+    print('Alpha \t %d' % args.alpha)
 
     print('Begin to fine tune BN-inception Network')
     print(40*'#')
