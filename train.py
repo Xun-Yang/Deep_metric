@@ -8,7 +8,7 @@ from torch.backends import cudnn
 from torch.autograd import Variable
 import models
 import losses
-from utils import RandomIdentitySampler, mkdir_if_missing, logging, display, orth_reg
+from utils import RandomIdentitySampler, mkdir_if_missing, logging, display
 import DataSet
 cudnn.benchmark = True
 
@@ -111,8 +111,6 @@ if __name__ == '__main__':
                         help='hyper parameter in KNN Softmax')
     parser.add_argument('-k', default=16, type=int, metavar='n',
                         help='number of neighbour points in KNN')
-    parser.add_argument('-init', default='random',
-                        help='the initialization way of FC layer')
 
     # network
     parser.add_argument('-data', default='cub', required=True,
