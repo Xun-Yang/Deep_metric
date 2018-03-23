@@ -36,15 +36,6 @@ def main(args):
 
         model_dict.update(pretrained_dict)
 
-        # orth init
-        if args.init == 'orth':
-            print('initialize the FC layer orthogonally')
-            _, _, v = torch.svd(model_dict['Embed.linear.weight'])
-            model_dict['Embed.linear.weight'] = v.t()
-
-        # zero bias
-        model_dict['Embed.linear.bias'] = torch.zeros(args.dim)
-
         model.load_state_dict(model_dict)
     else:
         # resume model
@@ -122,8 +113,6 @@ if __name__ == '__main__':
                         help='number of neighbour points in KNN')
     parser.add_argument('-init', default='random',
                         help='the initialization way of FC layer')
-    parser.add_argument('-orth', default=0, type=float,
-                        help='the coefficient orthogonal regularized term')
 
     # network
     parser.add_argument('-data', default='cub', required=True,
