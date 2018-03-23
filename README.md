@@ -129,4 +129,4 @@ I will address the problem in these days.
 
 
 ## tSNE visualization on CUB-200
-![image](https://github.com/bnulihaixia/Deep_metric/Vision/tsne-cub.jpg)
+![image](https://github.com/bnulihaixia/Deep_metric/blob/master/Vision/tsne-cub.jpg)
