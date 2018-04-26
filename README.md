@@ -71,6 +71,15 @@ Pre-trained Inceptionn-BN(inception-v2) used in most deep metric learning papers
 
 Download site: http://data.lip6.fr/cadene/pretrainedmodels/bn_inception-239d2248.pth
 
+```bash
+wget http://data.lip6.fr/cadene/pretrainedmodels/bn_inception-239d2248.pth
+
+mkdir pretrained_models
+
+cp   bn_inception-239d2248.pth    pretrained_models/
+```
+
+
 ~~(to save your time, we already download them down and put on my Baidu YunPan.We also put inception v3 in the Baidu YunPan, the performance of inception v-3 is a little worse(about 1.5% on recall@1 ) than inception BN on CUB/Car datasets.)~~
 ## Prerequisites
 
@@ -109,13 +118,13 @@ If you have finetuned the model to have better performance than below, please te
 |HistogramLoss| |
 |DistWeightDeviance Loss|51.6|
 |SoftmaxNeig Loss|56.3|
-|KNNSoftmax(ONCA) Loss|60.7|
+|NCA Loss|60.7|
 
 Pool5-512(64, 128, 256)dim L2 means the feature is transformed from Pool5 via a orthogonal transform.
 
 ## Reproducing Car-196 (or CUB-200-2011) experiments
 
-**With  ONCA Loss (KNNSoftmax Loss) :**
+**With  NCA Loss  :**
 
 ```bash
 sh run_train_00.sh
@@ -128,4 +137,5 @@ the train.py should be modified a little when you used other loss functions.
 I will address the problem in these days.
 
 
-Future work: I will make the code more clear before 2018 - 4 - 15 . and also share my experiment results. 
+## tSNE visualization on CUB-200
+![image](https://github.com/bnulihaixia/Deep_metric/blob/master/Vision/tsne-cub.jpg)
