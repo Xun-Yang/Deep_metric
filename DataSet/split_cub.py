@@ -15,6 +15,9 @@ paths = [os.path.join(root, x) for x in sets]
 
 
 for img in dirs:
+    if img[:2] == '._':
+        continue
+    print(img)
     index = (int(img.split('.')[0]))
     img_path = os.path.join(image_folder, img)
     if index < 101:

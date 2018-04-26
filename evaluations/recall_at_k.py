@@ -103,6 +103,7 @@ def Recall_at_ks_products(sim_mat, query_ids=None, gallery_ids=None):
             num_valid[3] += 1
     return num_valid/float(m)
 
+
 def main():
     import torch
     sim_mat = torch.rand(int(7e4), int(7*400))

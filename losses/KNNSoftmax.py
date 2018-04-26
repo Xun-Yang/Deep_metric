@@ -7,9 +7,9 @@ from torch.autograd import Variable
 import numpy as np
 
 
-class NCA(nn.Module):
+class KNNSoftmax(nn.Module):
     def __init__(self, alpha=30, k=16):
-        super(NCA, self).__init__()
+        super(KNNSoftmax, self).__init__()
         self.alpha = alpha
         self.K = k
 
@@ -102,7 +102,7 @@ def main():
     y_ = 8*list(range(num_class))
     targets = Variable(torch.IntTensor(y_))
 
-    print(NCA(alpha=30)(inputs, targets))
+    print(KNNSoftmax(alpha=30)(inputs, targets))
 
 
 if __name__ == '__main__':
