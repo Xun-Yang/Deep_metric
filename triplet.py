@@ -7,16 +7,15 @@ from torch.autograd import Variable
 import numpy as np
 
 
-class KNNSoftmax(nn.Module):
-    def __init__(self, alpha=30, k=16):
-        super(KNNSoftmax, self).__init__()
+class Triplet(nn.Module):
+    def __init__(self, alpha=4):
+        super(Triplet, self).__init__()
         self.alpha = alpha
-        self.K = k
 
     def forward(self, inputs, targets):
         n = inputs.size(0)
         # Compute pairwise distance
-        dist_mat = euclidean_dist(inputs)
+        dist_mat = self.alpha*euclidean_dist(inputs)
         targets = targets.cuda()
         # split the positive and negative pairs
         eyes_ = Variable(torch.eye(n, n)).cuda()
@@ -37,41 +36,34 @@ class KNNSoftmax(nn.Module):
 
         loss = list()
         acc_num = 0
+        num_valid_triplets = 0
 
         # 遍历Anchor, 每个样本都作为Anchor,来计算损失
         for i, pos_pair in enumerate(pos_dist):
             # pos_pair是以第i个样本为Anchor的所有正样本的距离
-            pos_pair = torch.sort(pos_pair)[0]
+            pos_pair = pos_dist[i]
             # neg_pair是以第i个样本为Anchor的所有负样本的距离
             neg_pair = neg_dist[i]
 
-            # 第K+1个近邻点到Anchor的距离值
-            pair = torch.cat([pos_pair, neg_pair])
-            threshold = torch.sort(pair)[0][self.K]
+            pos_pair = pos_pair.repeat(num_neg_instances, 1)
+            neg_pair = neg_pair.repeat((num_instances-1), 1).t()
 
-            # 取出K近邻中的正样本对和负样本对
-            pos_neig = torch.masked_select(pos_pair, pos_pair < threshold)
-            neg_neig = torch.masked_select(neg_pair, neg_pair < threshold)
-
-            # 若前K个近邻中没有正样本，则仅取最近正样本
-            if len(pos_neig) == 0:
-                pos_neig = pos_pair[0]
-
-            if i == 1 and np.random.randint(1024) == 1:
-                print('pos_pair is ---------', pos_neig)
-                print('neg_pair is ---------', neg_neig)
-
-            # 计算logit, 1 的作用是防止超过计算机浮点数
-            pos_logit = torch.sum(torch.exp(self.alpha*(1 - pos_neig)))
-            neg_logit = torch.sum(torch.exp(self.alpha*(1 - neg_neig)))
-            loss_ = -torch.log(pos_logit/(pos_logit + neg_logit))
-
-            if loss_.data[0] < 0.6:
+            triplet_mat = torch.log(torch.exp(pos_pair - neg_pair) + 1)
+            triplet_mask = triplet_mat > 0.7
+            valid_triplets = torch.masked_select(triplet_mat, triplet_mask)
+            if len(valid_triplets) == 0:
                 acc_num += 1
+                continue
+
+            num_valid_triplets += torch.sum(triplet_mask).data[0]
+            loss_ = torch.mean(valid_triplets)
             loss.append(loss_)
 
-        # 遍历所有样本为Anchor，对Loss取平均
-        loss = torch.mean(torch.cat(loss))
+        # transverse all the valid triplets then average
+        if num_valid_triplets == 0:
+            loss = 0*torch.sum(pos_pair)
+        else:
+            loss = (1/num_valid_triplets)*torch.sum(torch.cat(loss))
 
         accuracy = float(acc_num)/n
         neg_d = torch.mean(neg_dist).data[0]
@@ -102,7 +94,7 @@ def main():
     y_ = 8*list(range(num_class))
     targets = Variable(torch.IntTensor(y_))
 
-    print(KNNSoftmax(alpha=30)(inputs, targets))
+    print(Triplet(alpha=4)(inputs, targets))
 
 
 if __name__ == '__main__':

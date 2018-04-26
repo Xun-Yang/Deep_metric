@@ -13,7 +13,7 @@ def display(args):
     print('Embedded Dimension \t %d' % args.dim)
 
     print('Loss Function \t%s' % args.loss)
-    print('Number of Neighbour \t%d' % args.k)
+    # print('Number of Neighbour \t%d' % args.k)
     print('Alpha \t %d' % args.alpha)
 
     print('Begin to fine tune BN-inception Network')

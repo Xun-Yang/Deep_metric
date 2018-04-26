@@ -115,6 +115,7 @@ class DistanceMatchLoss(nn.Module):
 
         return loss, prec, pos_d, neg_d
 
+
 def main():
     data_size = 32
     input_dim = 3

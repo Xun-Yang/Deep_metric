@@ -1,3 +1,4 @@
+# coding=utf-8
 from __future__ import absolute_import
 
 import torch
@@ -6,25 +7,15 @@ from torch.autograd import Variable
 # import numpy as np
 
 
-def euclidean_dist(inputs_):
-    # Compute pairwise distance, replace by the official when merged
-    n = inputs_.size(0)
-    dist = torch.pow(inputs_, 2).sum(dim=1, keepdim=True).expand(n, n)
-    dist = dist + dist.t()
-    dist.addmm_(1, -2, inputs_, inputs_.t())
-    dist = dist.clamp(min=1e-12).sqrt()  # for numerical stability
-    return dist
-
-
-class ContrastiveLoss(nn.Module):
-    def __init__(self, margin=0.1):
-        super(ContrastiveLoss, self).__init__()
+class BatchAll(nn.Module):
+    def __init__(self, margin=0.02, alpha=0):
+        super(BatchAll, self).__init__()
         self.margin = margin
-        self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
+        self.alpha = alpha
 
     def forward(self, inputs, targets):
         n = inputs.size(0)
-        # Compute pairwise distance, replace by the official when merged
+        # Compute pairwise distance
         dist_mat = euclidean_dist(inputs)
         targets = targets.cuda()
         # split the positive and negative pairs
@@ -44,26 +35,49 @@ class ContrastiveLoss(nn.Module):
         neg_dist = neg_dist.resize(
             len(neg_dist) // num_neg_instances, num_neg_instances)
 
-        #  clear way to compute the loss first
         loss = list()
-        err = 0
+        acc_num = 0
+        num_valid_triplets = 0
 
         for i, pos_pair in enumerate(pos_dist):
+            pos_pair = pos_dist[i]
+            neg_pair = neg_dist[i]
 
-            pos_pair = torch.sort(pos_pair)[0]
-            neg_pair = torch.sort(neg_dist[i])[0]
-            pos_loss = torch.mean(torch.clamp(pos_pair - 0.6, min=0))
-            neg_loss = torch.mean(torch.clamp(1.2- neg_pair, min=0)) 
-            loss_ = neg_loss + pos_loss
+            pos_pair = pos_pair.repeat(num_neg_instances, 1)
+            neg_pair = neg_pair.repeat((num_instances-1), 1).t()
+
+            triplet_mat = pos_pair - neg_pair + self.margin
+            triplet_mask = triplet_mat > 0
+            valid_triplets = torch.masked_select(triplet_mat, triplet_mask)
+            if len(valid_triplets) == 0:
+                acc_num += 1
+                continue
+
+            num_valid_triplets += torch.sum(triplet_mask).data[0]
+            loss_ = torch.sum(valid_triplets)
             loss.append(loss_)
 
-        loss = torch.sum(torch.cat(loss))/n
+        # transverse all the valid triplets then average
+        if num_valid_triplets == 0:
+            loss = 0*torch.sum(pos_pair)
+        else:
+            loss = (1/num_valid_triplets)*torch.sum(torch.cat(loss))
 
-        prec = 1 - float(err)/n
+        accuracy = float(acc_num)/n
         neg_d = torch.mean(neg_dist).data[0]
         pos_d = torch.mean(pos_dist).data[0]
 
-        return loss, prec, pos_d, neg_d
+        return loss, accuracy, pos_d, neg_d
+
+
+def euclidean_dist(inputs_):
+    n = inputs_.size(0)
+    dist = torch.pow(inputs_, 2).sum(dim=1, keepdim=True).expand(n, n)
+    dist = dist + dist.t()
+    dist.addmm_(1, -2, inputs_, inputs_.t())
+    # for numerical stability
+    dist = dist.clamp(min=1e-12).sqrt()
+    return dist
 
 
 def main():
@@ -78,10 +92,9 @@ def main():
     y_ = 8*list(range(num_class))
     targets = Variable(torch.IntTensor(y_))
 
-    print(ContrastiveLoss(margin=0.1)(inputs, targets))
+    print(BatchAll()(inputs, targets))
 
 
 if __name__ == '__main__':
     main()
     print('Congratulations to you!')
-

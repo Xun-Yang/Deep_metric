@@ -14,9 +14,10 @@ def similarity(inputs_):
 
 
 class BinDevianceLoss(nn.Module):
-    def __init__(self, margin=0.5):
+    def __init__(self, alpha=20, margin=0.5):
         super(BinDevianceLoss, self).__init__()
         self.margin = margin
+        self.alpha = alpha
 
     def forward(self, inputs, targets):
         n = inputs.size(0)
@@ -58,7 +59,7 @@ class BinDevianceLoss(nn.Module):
 
             neg_pair = torch.sort(neg_pair)[0]
 
-            if i == 1 and np.random.randint(199) == 1:
+            if i == 1 and np.random.randint(299) == 1:
                 print('neg_pair is ---------', neg_pair)
                 print('pos_pair is ---------', pos_pair.data)
             pos_loss = torch.mean(torch.log(1 + torch.exp(-2*(pos_pair - self.margin))))

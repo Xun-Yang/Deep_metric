@@ -18,7 +18,6 @@ def euclidean_dist(inputs_):
 
 def GaussDistribution(dist_list):
     """
-
     :param dist_list:
     :return:
     """

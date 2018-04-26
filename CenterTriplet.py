@@ -40,10 +40,13 @@ class CenterTripletLoss(nn.Module):
         targets_ = list(set(targets.data))
         num_class = len(targets_)
 
-        targets_ = Variable(torch.LongTensor(targets_)).cuda()
+        # targets_ = Variable(torch.LongTensor(targets_)).cuda()
+        targets_ = Variable(torch.LongTensor(targets_))
+
         mask_ = targets.repeat(num_class, 1).eq(targets_.repeat(n, 1).t())
-        # print(mask_.size())
-        _mask = Variable(torch.ByteTensor(num_class, n).fill_(1)).cuda() - mask_
+        # _mask = Variable(torch.ByteTensor(num_class, n).fill_(1)).cuda() - mask_
+        _mask = Variable(torch.ByteTensor(num_class, n).fill_(1)) - mask_
+
         centers = []
         inputs_list = []
 
@@ -56,10 +59,7 @@ class CenterTripletLoss(nn.Module):
         centers = [centers[i].resize(1, num_dim) for i in range(len(centers))]
         centers = torch.cat(centers, 0)
 
-        # compute centers loss here
-        # dist_ap, dist_an = [], []
         centers_dist = pair_euclidean_dist(centers, inputs)
-        # exp_dist = torch.exp(-centers_dist)
         neg_dist = centers_dist[_mask].resize(num_class-1, n)
         pos_dist = centers_dist[mask_]
         prec = (torch.min(neg_dist, 0)[0].data > 1.0*pos_dist.data).sum() * 1./n
@@ -67,13 +67,27 @@ class CenterTripletLoss(nn.Module):
         dist_an = torch.mean(neg_dist).data[0]
         dist_ap = torch.mean(pos_dist).data[0]
 
-        # pos_dist = pos_dist - 0.8
-        # neg_dist = 3.2 - neg_dist
-        # print(torch.log(pos_dist))
-        # print(torch.sum(torch.exp(centers_dist), 0))
         loss = torch.mean(pos_dist.clamp(min=0.15) -
                           torch.log(torch.sum(torch.exp(-neg_dist.clamp(max=0.6)), 0)))
 
-        # print(loss)
         return loss, prec, dist_ap, dist_an
 
+
+def main():
+    data_size = 32
+    input_dim = 3
+    output_dim = 2
+    num_class = 4
+    # margin = 0.5
+    x = Variable(torch.rand(data_size, input_dim), requires_grad=False)
+    w = Variable(torch.rand(input_dim, output_dim), requires_grad=True)
+    inputs = x.mm(w)
+    y_ = 8*list(range(num_class))
+    targets = Variable(torch.IntTensor(y_))
+
+    print(CenterTripletLoss()(inputs, targets))
+
+
+if __name__ == '__main__':
+    main()
+    print('Congratulations to you!')
