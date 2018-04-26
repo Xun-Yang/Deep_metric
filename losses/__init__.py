@@ -1,7 +1,7 @@
 from __future__ import print_function, absolute_import
 
 from .SoftmaxNeigLoss import SoftmaxNeigLoss
-from .KNNSoftmax import KNNSoftmax
+from .NCA import NCA 
 from .NeighbourLoss import NeighbourLoss
 from .triplet import Triplet
 from .CenterTriplet import CenterTripletLoss
@@ -33,7 +33,7 @@ from .Grad_NCA import Grad_NCA
 
 __factory = {
     'softneig': SoftmaxNeigLoss,
-    'knnsoftmax': KNNSoftmax,
+    'nca': NCA,
     'neighbour': NeighbourLoss,
     'histogram': HistogramLoss,
     'gaussian': GaussianMetricLoss,
