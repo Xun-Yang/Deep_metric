@@ -22,8 +22,8 @@ from .DistWeightDevBranchLoss import DistWeightDevBranchLoss
 from .DistWeightNeighbourLoss import DistWeightNeighbourLoss
 from .BDWNeighbourLoss import BDWNeighbourLoss
 from .EnsembleDWNeighbourLoss import EnsembleDWNeighbourLoss
-from .BranchKNNSoftmax import BranchKNNSoftmax
-from .JSDivKNNSoftmaxLoss import JSDivKNNSoftmaxLoss
+# from .BranchKNNSoftmax import BranchKNNSoftmax
+# from .JSDivKNNSoftmaxLoss import JSDivKNNSoftmaxLoss
 from .A_triplet import ATriplet
 from .Batchall import BatchAll
 from .ABatchall import ABatchAll
@@ -50,8 +50,8 @@ __factory = {
     'dwdevbranch': DistWeightDevBranchLoss,
     'bdwneig': BDWNeighbourLoss,
     'edwneig': EnsembleDWNeighbourLoss,
-    'branchKS': BranchKNNSoftmax,
-    'JSDivKS': JSDivKNNSoftmaxLoss,
+  #  'branchKS': BranchKNNSoftmax,
+  #  'JSDivKS': JSDivKNNSoftmaxLoss,
     'triplet': Triplet,
     'Atriplet': ATriplet,
     'batchall': BatchAll,
