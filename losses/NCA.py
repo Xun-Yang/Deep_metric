@@ -8,7 +8,7 @@ import numpy as np
 
 
 class NCA(nn.Module):
-    def __init__(self, alpha=30, k=16):
+    def __init__(self, alpha=16, k=32):
         super(NCA, self).__init__()
         self.alpha = alpha
         self.K = k
@@ -38,7 +38,6 @@ class NCA(nn.Module):
         loss = list()
         acc_num = 0
 
-        # 遍历Anchor, 每个样本都作为Anchor,来计算损失
         for i, pos_pair in enumerate(pos_dist):
             # pos_pair是以第i个样本为Anchor的所有正样本的距离
             pos_pair = torch.sort(pos_pair)[0]
@@ -61,9 +60,10 @@ class NCA(nn.Module):
                 print('pos_pair is ---------', pos_neig)
                 print('neg_pair is ---------', neg_neig)
 
-            # 计算logit, 1 的作用是防止超过计算机浮点数
-            pos_logit = torch.sum(torch.exp(self.alpha*(1 - pos_neig)))
-            neg_logit = torch.sum(torch.exp(self.alpha*(1 - neg_neig)))
+            base = torch.mean(dist_mat[i]).data[0]
+            # 计算logit, base的作用是防止超过计算机浮点数
+            pos_logit = torch.sum(torch.exp(self.alpha*(base - pos_neig)))
+            neg_logit = torch.sum(torch.exp(self.alpha*(base - neg_neig)))
             loss_ = -torch.log(pos_logit/(pos_logit + neg_logit))
 
             if loss_.data[0] < 0.6:
@@ -86,7 +86,7 @@ def euclidean_dist(inputs_):
     dist = dist + dist.t()
     dist.addmm_(1, -2, inputs_, inputs_.t())
     # for numerical stability
-    dist = dist.clamp(min=1e-12).sqrt()
+    # dist = dist.clamp(min=1e-12).sqrt()
     return dist
 
 

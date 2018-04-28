@@ -17,7 +17,7 @@ cudnn.benchmark = True
 def main(args):
 
     #  训练日志保存
-    log_dir = os.path.join('checkpoints', args.log_dir)
+    log_dir = os.path.join(args.checkpoints, args.log_dir)
     mkdir_if_missing(log_dir)
 
     sys.stdout = logging.Logger(os.path.join(log_dir, 'log.txt'))
@@ -169,6 +169,8 @@ if __name__ == '__main__':
                         help='resume epoch')
 
     # basic parameter
+    parser.add_argument('-checkpoints', default='/opt/intern/users/xunwang',
+                        help='where the trained models save')
     parser.add_argument('-log_dir', default=None,
                         help='where the trained models save')
     parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
