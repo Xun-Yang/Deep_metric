@@ -32,13 +32,13 @@
 
   I think my implement is more reasonable and more flexible than the original sampling way in the paper.
 
-- KNNSoftmax (ONCA Loss)
+- NCA Loss
 
 
-   Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structur  -Ruslan Salakhutdinov and Geoffrey Hinton
+   Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structure  -Ruslan Salakhutdinov and Geoffrey Hinton
 
 
-  Though the method is more than 10 years old, It has best performance.
+  Though the method was proposed in 2004, It has best performance.
 
 
   R@1 is higher 0.61 on  CUB without test augment with Dim 512 finetuned on pretrained inception-v2
