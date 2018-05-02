@@ -103,9 +103,12 @@ def main(args):
             inputs = Variable(inputs.cuda())
             labels = Variable(labels).cuda()
 
+            print(labels)
+
             optimizer.zero_grad()
 
             embed_feat = model(inputs)
+            print(embed_feat)
 
             loss, inter_, dist_ap, dist_an = criterion(embed_feat, labels)
             if args.orth > 0:
