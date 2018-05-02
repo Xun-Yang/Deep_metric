@@ -30,7 +30,7 @@ class Car196:
                 ])]
 
         if root is None:
-            root = 'DataSet/Car196'
+            root = '/opt/intern/users/xunwang/Car196'
         traindir = os.path.join(root, 'train')
         testdir = os.path.join(root, 'test')
 
