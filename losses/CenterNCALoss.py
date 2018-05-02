@@ -68,7 +68,7 @@ class CenterNCALoss(nn.Module):
         base = (torch.max(centers_dist) + torch.min(centers_dist)).data[0]/2
         pos_exp = torch.exp(-self.alpha*(pos_dist - base))
         a_exp = torch.sum(torch.exp(-self.alpha*(centers_dist - base)), 1)
-        loss = - torch.log(pos_exp/a_exp)
+        loss = - torch.mean(torch.log(pos_exp/a_exp))
 
         dist_an = torch.mean(neg_dist).data[0]
         dist_ap = float(num_instance)/(num_instance-1) * torch.mean(pos_dist).data[0]
