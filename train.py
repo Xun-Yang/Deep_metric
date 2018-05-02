@@ -72,7 +72,7 @@ def main(args):
                                  weight_decay=args.weight_decay)
 
     if args.loss == 'neighbour':
-        criterion = losses.create(args.loss).cuda()
+        criterion = losses.create(args.loss, k=args.k, margin=args.margin).cuda()
     else:
         criterion = losses.create(args.loss, alpha=args.alpha, k=args.k).cuda()
 
@@ -146,6 +146,8 @@ if __name__ == '__main__':
                         help='hyper parameter in KNN Softmax')
     parser.add_argument('-k', default=16, type=int, metavar='n',
                         help='number of neighbour points in KNN')
+    parser.add_argument('-margin', default=0.1, type=float,
+                        help='margin in loss function')
     parser.add_argument('-init', default='random',
                         help='the initialization way of FC layer')
     parser.add_argument('-orth', default=0, type=float,
