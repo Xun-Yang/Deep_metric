@@ -32,17 +32,21 @@ class CenterNCALoss(nn.Module):
         self.alpha = alpha
 
     def forward(self, inputs, targets):
+        inputs = inputs.cuda()
         n = inputs.size(0)
         num_dim = inputs.size(1)
         targets_ = list(set(targets.data))
         num_class = len(targets_)
         num_instance = n//num_class
 
-        targets_ = Variable(torch.IntTensor(targets_)).cuda()
+        targets_ = Variable(torch.IntTensor(targets_))
         # targets_ = Variable(torch.IntTensor(targets_))
-        targets = targets.cuda()
+        # targets = targets.cuda()
         pos_mask = (targets.repeat(num_class, 1).t()).eq(targets_.repeat(n, 1))
-        neg_mask = Variable(torch.ByteTensor(n, num_class).fill_(1)).cuda() - pos_mask
+        neg_mask = Variable(torch.ByteTensor(n, num_class).fill_(1)) - pos_mask
+
+        pos_mask = pos_mask.cuda()
+        neg_mask = neg_mask.cuda()
 
         centers = []
         inputs_list = []
