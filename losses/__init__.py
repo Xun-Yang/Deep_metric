@@ -29,6 +29,7 @@ from .Batchall import BatchAll
 from .ABatchall import ABatchAll
 from .A_hard_pair import AHardPair
 from .Grad_NCA import Grad_NCA
+from .CenterNCALoss import CenterNCALoss
 
 
 __factory = {
@@ -58,6 +59,7 @@ __factory = {
     'Abatchall': ABatchAll,
     'Ahardpair': AHardPair,
     'Grad_nca': Grad_NCA,
+    'center-nca': CenterNCALoss,
 }
 
 

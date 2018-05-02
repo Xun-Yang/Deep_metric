@@ -22,33 +22,34 @@ def pair_euclidean_dist(inputs_x, inputs_y):
     yy = torch.pow(inputs_y, 2).sum(dim=1, keepdim=True).expand(m, n).t()
     dist = xx + yy
     dist.addmm_(1, -2, inputs_x, inputs_y.t())
-    dist = dist.clamp(min=1e-12).sqrt()
+    # dist = dist.clamp(min=1e-12).sqrt()
     return dist
 
 
 class CenterNCALoss(nn.Module):
-    def __init__(self, alpha=30):
+    def __init__(self, alpha=16):
         super(CenterNCALoss, self).__init__()
         self.alpha = alpha
 
     def forward(self, inputs, targets):
+        inputs = inputs.cuda()
         n = inputs.size(0)
         num_dim = inputs.size(1)
         targets_ = list(set(targets.data))
         num_class = len(targets_)
         num_instance = n//num_class
 
-        # targets_ = Variable(torch.LongTensor(targets_)).cuda()
-        targets_ = Variable(torch.IntTensor(targets_))
+        targets_ = Variable(torch.IntTensor(targets_)).cuda()
+        # targets_ = Variable(torch.IntTensor(targets_))
+        targets = targets.cuda()
         pos_mask = (targets.repeat(num_class, 1).t()).eq(targets_.repeat(n, 1))
-        # _mask = Variable(torch.ByteTensor(num_class, n).fill_(1)).cuda() - mask_
-        neg_mask = Variable(torch.ByteTensor(n, num_class).fill_(1)) - pos_mask
+        neg_mask = Variable(torch.ByteTensor(n, num_class).fill_(1)).cuda() - pos_mask
 
         centers = []
         inputs_list = []
         prec = 0
 
-        temp = targets.data.numpy()
+        temp = targets.cpu().data.numpy()
         for i, target in enumerate(targets_):
             idx = np.where(temp == target.data[0])
             input_ = inputs[idx[0], :]
@@ -66,8 +67,10 @@ class CenterNCALoss(nn.Module):
         neg_dist = centers_dist[neg_mask].resize(n, num_class-1)
 
         # for computation stability
-        base = torch.mean(centers_dist).data[0]
-        loss = torch.mean(torch.exp(-self.alpha*(pos_dist - base)))
+        base = (torch.max(centers_dist) + torch.min(centers_dist)).data[0]/2
+        pos_exp = torch.exp(-self.alpha*(pos_dist - base))
+        a_exp = torch.sum(torch.exp(-self.alpha*(centers_dist - base)), 1)
+        loss = - torch.log(pos_exp/a_exp)
 
         dist_an = torch.mean(neg_dist).data[0]
         dist_ap = float(num_instance)/(num_instance-1) * torch.mean(pos_dist).data[0]
