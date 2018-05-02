@@ -32,7 +32,6 @@ class CenterNCALoss(nn.Module):
         self.alpha = alpha
 
     def forward(self, inputs, targets):
-        inputs = inputs.cuda()
         n = inputs.size(0)
         num_dim = inputs.size(1)
         targets_ = list(set(targets.data))
