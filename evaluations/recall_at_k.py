@@ -43,7 +43,7 @@ def Recall_at_ks(sim_mat, query_ids=None, gallery_ids=None):
     num_valid = np.zeros(4)
     for i in range(m):
         x = sim_mat[i]
-        indice = heapq.nlargest(16, range(len(x)), x.take)
+        indice = heapq.nlargest(8, range(len(x)), x.take)
         if query_ids[i] == gallery_ids[indice[0]]:
             num_valid += 1
         elif query_ids[i] == gallery_ids[indice[1]]:
