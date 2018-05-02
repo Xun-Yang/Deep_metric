@@ -43,9 +43,6 @@ class CenterNCALoss(nn.Module):
         pos_mask = (targets.repeat(num_class, 1).t()).eq(targets_.repeat(n, 1))
         neg_mask = Variable(torch.ByteTensor(n, num_class).fill_(1)).cuda() - pos_mask
 
-        pos_mask = pos_mask.cuda()
-        neg_mask = neg_mask.cuda()
-
         centers = []
         inputs_list = []
         prec = 0
@@ -53,13 +50,7 @@ class CenterNCALoss(nn.Module):
         temp = targets.cpu().data.numpy()
         for i, target in enumerate(targets_):
             idx = np.where(temp == target.data[0])
-            print(idx)
-            print(idx[0])
-            print(type(idx))
-            print(type(idx[0]))
-            print(type(inputs[3]))
-            print(inputs[4])
-            input_ = inputs[idx[0]]
+            input_ = torch.cat([inputs[i].resize(1, num_dim) for i in idx[0]], 0)
             centers.append(torch.mean(input_, 0))
             inputs_list.append(input_)
 
