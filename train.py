@@ -71,7 +71,9 @@ def main(args):
     optimizer = torch.optim.Adam(param_groups, lr=args.lr,
                                  weight_decay=args.weight_decay)
 
-    if args.loss == 'neighbour':
+    if args.loss == 'center-nca':
+        criterion = losses.create(args.loss, alpha=args.alpha).cuda()
+    elif args.loss == 'neighbour':
         criterion = losses.create(args.loss, k=args.k, margin=args.margin).cuda()
     else:
         criterion = losses.create(args.loss, alpha=args.alpha, k=args.k).cuda()
