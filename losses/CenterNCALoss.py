@@ -54,7 +54,9 @@ class CenterNCALoss(nn.Module):
         for i, target in enumerate(targets_):
             idx = np.where(temp == target.data[0])
             print(idx)
+            print(idx[0])
             print(type(idx))
+            print(type(idx[0]))
             print(type(inputs))
             print(inputs)
             input_ = inputs[idx[0], :]
