@@ -53,6 +53,10 @@ class CenterNCALoss(nn.Module):
         temp = targets.cpu().data.numpy()
         for i, target in enumerate(targets_):
             idx = np.where(temp == target.data[0])
+            print(idx)
+            print(type(idx))
+            print(type(inputs))
+            print(inputs)
             input_ = inputs[idx[0], :]
             centers.append(torch.mean(input_, 0))
             inputs_list.append(input_)
