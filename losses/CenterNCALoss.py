@@ -39,12 +39,9 @@ class CenterNCALoss(nn.Module):
         num_class = len(targets_)
         num_instance = n//num_class
 
-        targets = torch.IntTensor(targets.cuda())
-        targets_ = Variable(torch.IntTensor(targets_)).cuda()
-        # targets_ = Variable(torch.IntTensor(targets_))
-        # targets = targets.cuda()
+        targets_ = Variable(torch.LongTensor(targets_)).cuda()
         pos_mask = (targets.repeat(num_class, 1).t()).eq(targets_.repeat(n, 1))
-        neg_mask = Variable(torch.ByteTensor(n, num_class).fill_(1)) - pos_mask
+        neg_mask = Variable(torch.ByteTensor(n, num_class).fill_(1)).cuda() - pos_mask
 
         pos_mask = pos_mask.cuda()
         neg_mask = neg_mask.cuda()
@@ -91,7 +88,7 @@ def main():
     w = Variable(torch.rand(input_dim, output_dim), requires_grad=True).cuda()
     inputs = x.mm(w)
     y_ = 8*list(range(num_class))
-    targets = Variable(torch.IntTensor(y_).cuda())
+    targets = Variable(torch.LongTensor(y_).cuda())
 
     print(CenterNCALoss()(inputs, targets))
 

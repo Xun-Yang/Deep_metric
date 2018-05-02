@@ -101,14 +101,13 @@ def main(args):
             inputs, labels = data
             # wrap them in Variable
             inputs = Variable(inputs.cuda())
-            labels = Variable(labels).cuda()
 
-            print(labels)
+            # type of labels is Variable cuda.Longtensor
+            labels = Variable(labels).cuda()
 
             optimizer.zero_grad()
 
             embed_feat = model(inputs)
-            print(embed_feat)
 
             loss, inter_, dist_ap, dist_an = criterion(embed_feat, labels)
             if args.orth > 0:
