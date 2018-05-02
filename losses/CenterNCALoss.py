@@ -57,9 +57,9 @@ class CenterNCALoss(nn.Module):
             print(idx[0])
             print(type(idx))
             print(type(idx[0]))
-            print(type(inputs))
-            print(inputs)
-            input_ = inputs[idx[0], :]
+            print(type(inputs[3]))
+            print(inputs[4])
+            input_ = inputs[idx[0]]
             centers.append(torch.mean(input_, 0))
             inputs_list.append(input_)
 
