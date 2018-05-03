@@ -18,7 +18,6 @@ parser.add_argument('-test', type=int, default=1,
                     help='evaluation on test set or train set')
 
 args = parser.parse_args()
-cudnn.benchmark = True
 
 # model = inception_v3(dropout=0.5)
 model = torch.load(args.r)

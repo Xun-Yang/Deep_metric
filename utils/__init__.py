@@ -6,6 +6,7 @@ from .osutils import mkdir_if_missing
 from .orthogonal_regularizaton import orth_reg
 from .str2nums import chars2nums
 from .HyperparamterDisplay import display
+from .Batch_generator import BatchGenerator
 
 def to_numpy(tensor):
     if torch.is_tensor(tensor):
