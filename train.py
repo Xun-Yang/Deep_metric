@@ -73,6 +73,8 @@ def main(args):
 
     if args.loss == 'center-nca':
         criterion = losses.create(args.loss, alpha=args.alpha).cuda()
+    elif args.loss == 'cluster-nca':
+        criterion = losses.create(args.loss, alpha=args.alpha, beta=args.beta).cuda()
     elif args.loss == 'neighbour':
         criterion = losses.create(args.loss, k=args.k, margin=args.margin).cuda()
     else:
@@ -147,9 +149,13 @@ if __name__ == '__main__':
     parser.add_argument('-dim', default=512, type=int, metavar='n',
                         help='dimension of embedding space')
     parser.add_argument('-alpha', default=30, type=int, metavar='n',
-                        help='hyper parameter in KNN Softmax')
+                        help='hyper parameter in NCA and its variants')
+    parser.add_argument('-beta', default=0.1, type=float, metavar='n',
+                        help='hyper parameter in some deep metric loss functions')
     parser.add_argument('-k', default=16, type=int, metavar='n',
                         help='number of neighbour points in KNN')
+    parser.add_argument('-n_cluster', default=25, type=int, metavar='n',
+                        help='number of clusters on mini-batch')
     parser.add_argument('-margin', default=0.1, type=float,
                         help='margin in loss function')
     parser.add_argument('-init', default='random',
