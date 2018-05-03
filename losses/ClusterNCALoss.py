@@ -98,7 +98,7 @@ class ClusterNCALoss(nn.Module):
             a_exp = torch.sum(torch.exp(-self.alpha*(dist - base)))
             loss_ = - torch.log(pos_exp/a_exp)
             loss.append(loss_)
-            if loss_ < 0.5:
+            if loss_.data[0] < 0.5:
                 num_match += 1
         loss = torch.mean(torch.cat(loss))
         # print(dist_an, dist_ap)
