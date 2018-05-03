@@ -14,9 +14,8 @@ mkdir result/$loss/$DATA/
 
 DIM_list="512 64"
 Beta_list='0.05 0.1 0.2 0.25 0.3'
-
-for DIM in $DIM_list;do
 for Beta in $Beta_list;do
+for Dim in $DIM_list;do
     l=$checkpoints/$loss/$DATA/$Beta-$Dim
     mkdir $checkpoints/$loss/$DATA/$Beta-$Dim
     CUDA_VISIBLE_DEVICES=7 python train.py -data $DATA  -net bn  -init orth -lr 1e-5 -dim $DIM -alpha 20 -beta $Beta -n_cluster 30   -num_instances 8 -BatchSize 128 -loss $loss  -epochs 801 -checkpoints $checkpoints -log_dir $loss/$DATA/$Beta-$Dim  -save_step 100
