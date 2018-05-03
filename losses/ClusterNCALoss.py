@@ -64,7 +64,6 @@ class ClusterNCALoss(nn.Module):
 
         centers = []
         inputs_list = []
-        prec = 0
 
         for idx in split_:
             input_ = torch.cat([inputs[i].resize(1, num_dim) for i in idx], 0)
@@ -82,6 +81,7 @@ class ClusterNCALoss(nn.Module):
         loss = []
         dist_ap = []
         dist_an = []
+        num_match = 0
         for i, target in enumerate(targets):
             # for computation stability
             dist = centers_dist[i]
@@ -98,13 +98,15 @@ class ClusterNCALoss(nn.Module):
             a_exp = torch.sum(torch.exp(-self.alpha*(dist - base)))
             loss_ = - torch.log(pos_exp/a_exp)
             loss.append(loss_)
-
+            if loss_ < 0.5:
+                num_match += 1
         loss = torch.mean(torch.cat(loss))
         # print(dist_an, dist_ap)
         dist_an = torch.mean(torch.cat(dist_an)).data[0]
         dist_ap = torch.mean(torch.cat(dist_ap)).data[0]
 
-        return loss, prec, dist_ap, dist_an
+        accuracy = float(num_match)/len(targets)
+        return loss, accuracy, dist_ap, dist_an
 
 
 def main():
