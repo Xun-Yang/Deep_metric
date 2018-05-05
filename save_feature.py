@@ -6,10 +6,10 @@ from torch.backends import cudnn
 from evaluations import extract_features
 import DataSet
 import numpy as np
-torch.cuda.set_device(6)
+torch.cuda.set_device(0)
 
 cudnn.benchmark = True
-r = '/opt/intern/users/xunwang/checkpoints/nca/cub/64/model.pkl'
+r = '/opt/intern/users/xunwang/checkpoints/nca/cub/64/400_model.pkl'
 data = 'cub'
 dim = 64
 
@@ -25,8 +25,8 @@ features, labels = extract_features(model, data_loader, print_freq=32, metric=No
 features = [feature.resize_(1, dim) for feature in features]
 features = torch.cat(features)
 
-np.save('0_feat.npy', features.numpy())
-np.save('0_label.npy', labels)
+np.save('feat.npy', features.numpy())
+np.save('label.npy', labels)
 
 
 

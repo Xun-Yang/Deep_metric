@@ -54,29 +54,44 @@ class ClusterNCALoss(nn.Module):
         split_ = self.cluster(inputs, targets)
 
         if np.random.randint(256) == 1:
-            print('split batch into %d clusters' %len(split_))
+            print('split batch into %d clusters' % len(split_))
 
-        targets_ = []
-        for split_i in split_:
-            targets_.append(targets[split_i[0]])
         num_dim = inputs.size(1)
-        targets_ = torch.cat(targets_)
-
+        n = inputs.size(0)
         centers = []
         inputs_list = []
+        targets_ = []
 
-        for idx in split_:
-            input_ = torch.cat([inputs[i].resize(1, num_dim) for i in idx], 0)
+        cluster_mat = np.ones([n, len(split_)])
+        for i, split_i in enumerate(split_):
+            # print(split_i)
+            size_ = len(split_i)
+            if size_ > 1:
+                for k in split_i:
+                    cluster_mat[k][i] = float(size_*size_)/((size_-1)*(size_-1))
+            targets_.append(targets[split_i[0]])
+            input_ = torch.cat([inputs[i].resize(1, num_dim) for i in split_i], 0)
             centers.append(torch.mean(input_, 0))
             inputs_list.append(input_)
 
+        cluster_mat = Variable(torch.FloatTensor(cluster_mat)).cuda().detach()
+
+        # print(cluster_mat.requires_grad)
+
+        targets_ = torch.cat(targets_)
+
         centers = [center.resize(1, num_dim) for center in centers]
         centers = torch.cat(centers, 0)
+        # norm = centers.norm(dim=1, p=2, keepdim=True)
+        # print(norm)
+        # centers = centers.div(norm.expand_as(centers))
+        # norm = centers.norm(dim=1, p=2, keepdim=True)
+        # print(norm)
 
         # no gradient on centers
         # centers = centers.detach()
 
-        centers_dist = pair_euclidean_dist(inputs, centers)
+        centers_dist = pair_euclidean_dist(inputs, centers)*cluster_mat
 
         loss = []
         dist_ap = []
@@ -85,7 +100,7 @@ class ClusterNCALoss(nn.Module):
         for i, target in enumerate(targets):
             # for computation stability
             dist = centers_dist[i]
-            pos_pair_mask = (targets_==target)
+            pos_pair_mask = (targets_ == target)
             pos_pair = torch.masked_select(dist, pos_pair_mask)
 
             dist = torch.masked_select(dist, dist > 1e-3)
@@ -98,7 +113,7 @@ class ClusterNCALoss(nn.Module):
             a_exp = torch.sum(torch.exp(-self.alpha*(dist - base)))
             loss_ = - torch.log(pos_exp/a_exp)
             loss.append(loss_)
-            if loss_.data[0] < 0.5:
+            if loss_.data[0] < 0.3:
                 num_match += 1
         loss = torch.mean(torch.cat(loss))
         # print(dist_an, dist_ap)
@@ -111,7 +126,7 @@ class ClusterNCALoss(nn.Module):
 
 def main():
     features = np.load('feat.npy')
-    labels = np.load('labels.npy')
+    labels = np.load('label.npy')
 
     num_instances = 8
     batch_size = 128
