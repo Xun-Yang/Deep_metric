@@ -53,8 +53,10 @@ class ClusterNCALoss(nn.Module):
     def forward(self, inputs, targets):
         split_ = self.cluster(inputs, targets)
 
-        if np.random.randint(256) == 1:
+        if np.random.randint(64) == 1:
             print('split batch into %d clusters' % len(split_))
+            for t in split_:
+                print(t)
 
         num_dim = inputs.size(1)
         n = inputs.size(0)
