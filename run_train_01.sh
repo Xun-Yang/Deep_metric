@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # use one GPU for on night is enough
-DATA="products"
+DATA="product"
 loss="neighbour"
 checkpoints="/opt/intern/users/xunwang/checkpoints"
 r="_model.pkl"
