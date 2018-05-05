@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # use one GPU for on night is enough
-DATA="cub"
+DATA="products"
 loss="neighbour"
 checkpoints="/opt/intern/users/xunwang/checkpoints"
 r="_model.pkl"
@@ -13,15 +13,15 @@ mkdir result/
 mkdir result/$loss/
 mkdir result/$loss/$DATA/
 
-k_list="1 2 4 6 8"
-margin="0.1"
-for k in $k_list;do
+margin_list="0.01 0.05 0.15 0.2"
+k=1
+for margin in $margin_list;do
     l=$checkpoints/$loss/$DATA/$k-$margin
     mkdir $checkpoints/$loss/$DATA/$k-$margin
-    CUDA_VISIBLE_DEVICES=1 python train.py -data $DATA  -net bn  -init orth -lr 1e-5 -dim 64 -num_instances 8 -BatchSize 128  -loss $loss  -k $k -margin $margin -epochs 801 -checkpoints $checkpoints -log_dir $loss/$DATA/$k-$margin  -save_step 100
-    Model_LIST="100 200 300 400 500 600 700 800"
+    CUDA_VISIBLE_DEVICES=7 python train.py -data $DATA  -net bn  -init orth -lr 1e-5 -dim 128 -num_instances 4 -BatchSize 140  -loss $loss  -k $k -margin $margin -epochs 81 -checkpoints $checkpoints -log_dir $loss/$DATA/$k-$margin  -save_step 10
+    Model_LIST="40 50 60 70 80"
     for i in $Model_LIST; do
-        CUDA_VISIBLE_DEVICES=1  python test.py -data $DATA -r $l/$i$r >>result/$loss/$DATA/$k-$margin.txt
+        CUDA_VISIBLE_DEVICES=7  python test.py -data $DATA -r $l/$i$r >>result/$loss/$DATA/$k-$margin.txt
     done
 done
 
