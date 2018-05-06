@@ -12,7 +12,8 @@ from sklearn.preprocessing import OneHotEncoder
 def pair_euclidean_dist(inputs_x, inputs_y):
     n = inputs_x.size(0)
     m = inputs_y.size(0)
-    xx = torch.pow(inputs_x, 2).sum(dim=1, keepdim=True).expand(n, m)
+    xx = torch.pow(inputs_x, 2).sum(dim=1, keepdim=True).expand(
+        n, m)
     yy = torch.pow(inputs_y, 2).sum(dim=1, keepdim=True).expand(m, n).t()
     dist = xx + yy
     dist.addmm_(1, -2, inputs_x, inputs_y.t())
@@ -20,9 +21,9 @@ def pair_euclidean_dist(inputs_x, inputs_y):
     return dist
 
 
-class ClusterNCALoss(nn.Module):
-    def __init__(self, alpha=16, n_cluster=16, beta=0.5):
-        super(ClusterNCALoss, self).__init__()
+class KmeanLoss(nn.Module):
+    def __init__(self, alpha=16, n_cluster=2, beta=0.5):
+        super(KmeanLoss, self).__init__()
         self.alpha = alpha
         self.beta = beta
         self.n_clusters = n_cluster
@@ -31,17 +32,19 @@ class ClusterNCALoss(nn.Module):
         X = inputs.data.cpu().numpy()
         y = targets.data.cpu().numpy()
 
-        y = [[t] for t in y]
-        enc = OneHotEncoder()
-        enc.fit(y)
-
-        one_hot_y = enc.transform(y).toarray()
-        X = np.concatenate([X, self.beta * one_hot_y], 1)
-
-        kmeans = KMeans(n_clusters=self.n_clusters, random_state=0).fit(X)
-        pred_cluster = kmeans.labels_
         result = dict()
+        for y_ in set(y):
+            # print(y_)
+            idx_ = np.where(y == y_)
+            # print(idx_[0])
+            X_i = X[idx_[0]]
+            # print(X_i)
+            kmeans = KMeans(n_clusters=3, random_state=1).fit(X_i)
+            pred_cluster = kmeans.labels_
+            print(pred_cluster)
+
         for i in range(len(y)):
+
             k = str(y[i]) + ' ' + str(pred_cluster[i])
             if k in result:
                 result[k].append(i)
@@ -130,15 +133,14 @@ def main():
     features = np.load('0_feat.npy')
     labels = np.load('0_label.npy')
 
-    num_instances = 40
-    batch_size = 120
+    num_instances = 32
+    batch_size = 128
     Batch = BatchGenerator(labels, num_instances=num_instances, batch_size=batch_size)
     batch = Batch.batch()
 
     inputs = Variable(torch.FloatTensor(features[batch, :])).cuda()
     targets = Variable(torch.LongTensor(labels[batch])).cuda()
-    print(torch.mean(inputs))
-    print(ClusterNCALoss(n_cluster=9)(inputs, targets))
+    print(KmeanLoss(n_cluster=32)(inputs, targets))
 
 if __name__ == '__main__':
     main()

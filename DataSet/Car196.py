@@ -14,7 +14,7 @@ class Car196:
             transform = [transforms.Compose([
                 transforms.CovertBGR(),
                 transforms.Resize(256),
-                transforms.RandomResizedCrop(227),
+                transforms.RandomResizedCrop(size=227, scale=(0.6, 1)),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 transforms.Normalize(mean=mean_values,
