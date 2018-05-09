@@ -90,15 +90,16 @@ def main(args):
     labels = np.array(labels)
 
     centers, center_labels = cluster_(features, labels, n_clusters=3)
-
-    print(center_labels)
-    print(type(center_labels))
+    #
+    # print(center_labels)
+    # print(type(center_labels))
     center_labels = [int(center_label) for center_label in center_labels]
 
     # center_labels = [l for l in center_labels]
     centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
-    print('##### requires grad is True? ##### \n', centers.requires_grad)
+    # print('##### requires grad is True? ##### \n', centers.requires_grad)
     center_labels = Variable(torch.LongTensor(center_labels)).cuda()
+    print(40*'#', '\n Clustering Done')
 
     criterion = losses.create(args.loss, alpha=args.alpha,
                               centers=centers, center_labels=center_labels).cuda()
