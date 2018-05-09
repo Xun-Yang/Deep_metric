@@ -8,7 +8,7 @@ from torch.backends import cudnn
 from torch.autograd import Variable
 import models
 import losses
-from utils import RandomIdentitySampler, mkdir_if_missing, logging, display, orth_reg, cluster_
+from utils import mkdir_if_missing, logging, display, cluster_
 from evaluations import extract_features
 import DataSet
 import numpy as np
@@ -81,7 +81,7 @@ def main(args):
         return x
 
     data_loader = torch.utils.data.DataLoader(
-        data.train, batch_size=8, shuffle=False, drop_last=False)
+        data.train, batch_size=args.BatchSize, shuffle=False, drop_last=False)
 
     features, labels = extract_features(model, data_loader, print_freq=32, metric=None)
     features = [feature.resize_(1, args.dim) for feature in features]
@@ -90,24 +90,18 @@ def main(args):
     labels = np.array(labels)
 
     centers, center_labels = cluster_(features, labels, n_clusters=3)
-    #
-    # print(center_labels)
-    # print(type(center_labels))
     center_labels = [int(center_label) for center_label in center_labels]
 
-    # center_labels = [l for l in center_labels]
     centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
-    # print('##### requires grad is True? ##### \n', centers.requires_grad)
     center_labels = Variable(torch.LongTensor(center_labels)).cuda()
     print(40*'#', '\n Clustering Done')
 
     criterion = losses.create(args.loss, alpha=args.alpha,
                               centers=centers, center_labels=center_labels).cuda()
 
+    # random sampling to generate mini-batch
     train_loader = torch.utils.data.DataLoader(
-        data.train, batch_size=args.BatchSize,
-        sampler=RandomIdentitySampler(data.train, num_instances=args.num_instances),
-        drop_last=True, num_workers=args.nThreads)
+        data.train, batch_size=args.BatchSize, shuffle=True, drop_last=False)
 
     # save the train information
     epoch_list = list()
@@ -151,13 +145,16 @@ def main(args):
             if epoch == 0 and i == 0:
                 print(50 * '#')
                 print('Train Begin -- HA-HA-HA')
+            if i % 10 == 1:
+                print('[Epoch %05d Iteration %2d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
+                      % (epoch + 1,  i+1, running_loss, inter_, dist_ap, dist_an))
 
         loss_list.append(running_loss)
         pos_list.append(running_pos / i)
         neg_list.append(running_neg / i)
-
-        print('[Epoch %05d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
-              % (epoch + 1, running_loss, inter_, dist_ap, dist_an))
+        #
+        # print('[Epoch %05d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
+        #       % (epoch + 1, running_loss, inter_, dist_ap, dist_an))
 
         if epoch % args.save_step == 0:
             torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
@@ -171,8 +168,8 @@ if __name__ == '__main__':
     parser.add_argument('-lr', type=float, default=1e-4, help="learning rate of new parameters")
     parser.add_argument('-BatchSize', '-b', default=128, type=int, metavar='N',
                         help='mini-batch size (1 = pure stochastic) Default: 256')
-    parser.add_argument('-num_instances', default=8, type=int, metavar='n',
-                        help=' number of samples from one class in mini-batch')
+    # parser.add_argument('-num_instances', default=8, type=int, metavar='n',
+    #                     help=' number of samples from one class in mini-batch')
     parser.add_argument('-dim', default=512, type=int, metavar='n',
                         help='dimension of embedding space')
     parser.add_argument('-alpha', default=30, type=int, metavar='n',

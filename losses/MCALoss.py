@@ -32,7 +32,7 @@ class MCALoss(nn.Module):
         self.center_labels = center_labels
 
     def forward(self, inputs, targets):
-        print('center is same or not \n?', self.centers[0][0])
+        # print('center is same or not \n?', self.centers[0][0])
         centers_dist = pair_euclidean_dist(inputs, (self.centers))
         loss = []
         dist_ap = []
@@ -74,7 +74,7 @@ def main():
     Batch = BatchGenerator(labels, num_instances=num_instances, batch_size=batch_size)
     batch = Batch.batch()
 
-    inputs = Variable(torch.FloatTensor(features[batch, :])).cuda()
+    inputs = Variable(torch.FloatTensord(features[batch, :])).cuda()
     targets = Variable(torch.LongTensor(labels[batch])).cuda()
     print(torch.mean(inputs))
     mca = MCALoss(alpha=16, centers=centers, center_labels=center_labels)
