@@ -147,7 +147,7 @@ def main(args):
                 print('Train Begin -- HA-HA-HA')
             if i % 10 == 1:
                 print('[Epoch %05d Iteration %2d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
-                      % (epoch + 1,  i+1, running_loss, inter_, dist_ap, dist_an))
+                      % (epoch + 1,  i+1, loss.data[0], inter_, dist_ap, dist_an))
 
         loss_list.append(running_loss)
         pos_list.append(running_pos / i)
