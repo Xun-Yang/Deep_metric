@@ -139,7 +139,8 @@ def main(args):
             optimizer.step()
 
             # update centers
-            centers.data -= centers.grad.data
+            print(40*'#', torch.mean(torch.abs(centers.grad.data)))
+            centers.data -= args.lr*centers.grad.data
             centers.data = normalize(centers.data)
             centers.grad.data.zero_()
 
