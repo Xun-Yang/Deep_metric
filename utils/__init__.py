@@ -7,6 +7,7 @@ from .orthogonal_regularizaton import orth_reg
 from .str2nums import chars2nums
 from .HyperparamterDisplay import display
 from .Batch_generator import BatchGenerator
+from .cluster import cluster_
 
 def to_numpy(tensor):
     if torch.is_tensor(tensor):
