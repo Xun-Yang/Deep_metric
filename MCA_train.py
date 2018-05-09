@@ -16,7 +16,6 @@ cudnn.benchmark = True
 
 
 def main(args):
-
     #  训练日志保存
     log_dir = os.path.join(args.checkpoints, args.log_dir)
     mkdir_if_missing(log_dir)
@@ -91,10 +90,13 @@ def main(args):
     labels = np.array(labels)
 
     centers, center_labels = cluster_(features, labels, n_clusters=3)
+
+    print(center_labels)
     print(type(center_labels))
+    center_labels = [int(center_label) for center_label in center_labels]
+
     # center_labels = [l for l in center_labels]
     centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
-    print('#### type #### is', type(center_labels[0]))
     print('##### requires grad is True? ##### \n', centers.requires_grad)
     center_labels = Variable(torch.LongTensor(center_labels)).cuda()
 
