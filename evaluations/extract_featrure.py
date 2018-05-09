@@ -40,6 +40,8 @@ def extract_features(model, data_loader, print_freq=1, metric=None):
                   .format(i + 1, len(data_loader),
                           batch_time.val, batch_time.avg,
                           data_time.val, data_time.avg))
+        if i > 10:
+            break
     return features, labels
 
 
