@@ -133,7 +133,8 @@ def main(args):
             optimizer.step()
 
             # update centers
-            print(40*'#', torch.mean(torch.abs(centers.grad.data)))
+            if np.random.randint(64) == 1:
+                print(40*'#', torch.mean(torch.abs(centers.grad.data)))
             centers.data -= args.lr*centers.grad.data
             centers.data = normalize(centers.data)
             centers.grad.data.zero_()
@@ -145,7 +146,7 @@ def main(args):
             if epoch == 0 and i == 0:
                 print(50 * '#')
                 print('Train Begin -- HA-HA-HA')
-            if i % 10 == 1:
+            if i % 10 == 9:
                 print('[Epoch %05d Iteration %2d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
                       % (epoch + 1,  i+1, loss.data[0], inter_, dist_ap, dist_an))
 
