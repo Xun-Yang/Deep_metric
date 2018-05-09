@@ -18,10 +18,10 @@ def pair_euclidean_dist(inputs_x, inputs_y):
     return dist
 
 
-def normalize(x):
-    norm = x.norm(dim=1, p=2, keepdim=True)
-    x = x.div(norm.expand_as(x))
-    return x
+# def normalize(x):
+#     norm = x.norm(dim=1, p=2, keepdim=True)
+#     x = x.div(norm.expand_as(x))
+#     return x
 
 
 class MCALoss(nn.Module):
@@ -33,7 +33,7 @@ class MCALoss(nn.Module):
 
     def forward(self, inputs, targets):
         print('center is same or not \n?', self.centers[0][0])
-        centers_dist = pair_euclidean_dist(inputs, normalize(self.centers))
+        centers_dist = pair_euclidean_dist(inputs, (self.centers))
         loss = []
         dist_ap = []
         # dist_an = []

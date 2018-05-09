@@ -75,6 +75,11 @@ def main(args):
 
     # compute the cluster centers for each class here
 
+    def normalize(x):
+        norm = x.norm(dim=1, p=2, keepdim=True)
+        x = x.div(norm.expand_as(x))
+        return x
+
     data_loader = torch.utils.data.DataLoader(
         data.train, batch_size=8, shuffle=False, drop_last=False)
 
@@ -135,8 +140,8 @@ def main(args):
 
             # update centers
             centers.data -= args.lr*centers.grad.data
-            # centers.data = normalize(centers.data)
-            centers.grad.zero_()
+            centers.data = normalize(centers.data)
+            centers.grad.data.zero_()
 
             running_loss += loss.data[0]
             running_neg += dist_an
