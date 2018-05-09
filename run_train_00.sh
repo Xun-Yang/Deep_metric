@@ -16,7 +16,7 @@ DIM_list="512 64"
 for DIM in $DIM_list;do
     l=$checkpoints/$loss/$DATA/$DIM
     mkdir $checkpoints/$loss/$DATA/$DIM
-    CUDA_VISIBLE_DEVICES=7   python MCA_train.py -data $DATA  -net bn  -init orth -lr 1e-5 -dim $DIM -alpha 16  -num_instances 8 -BatchSize 128 -loss $loss  -epochs 101 -checkpoints $checkpoints -log_dir $loss/$DATA/$DIM  -save_step 10
+    CUDA_VISIBLE_DEVICES=7   python MCA_train.py -data $DATA  -net bn  -init orth -lr 1e-5 -dim $DIM -alpha 16  -BatchSize 128 -loss $loss  -epochs 101 -checkpoints $checkpoints -log_dir $loss/$DATA/$DIM  -save_step 10
     Model_LIST="10 30 50 70 90 100"
     for i in $Model_LIST; do
         CUDA_VISIBLE_DEVICES=7  python test.py -data $DATA -r $l/$i$r >>result/$loss/$DATA/$DIM.txt
