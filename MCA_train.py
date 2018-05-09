@@ -168,8 +168,8 @@ if __name__ == '__main__':
     parser.add_argument('-lr', type=float, default=1e-4, help="learning rate of new parameters")
     parser.add_argument('-BatchSize', '-b', default=128, type=int, metavar='N',
                         help='mini-batch size (1 = pure stochastic) Default: 256')
-    # parser.add_argument('-num_instances', default=8, type=int, metavar='n',
-    #                     help=' number of samples from one class in mini-batch')
+    parser.add_argument('-num_instances', default=8, type=int, metavar='n',
+                        help=' number of samples from one class in mini-batch')
     parser.add_argument('-dim', default=512, type=int, metavar='n',
                         help='dimension of embedding space')
     parser.add_argument('-alpha', default=30, type=int, metavar='n',
