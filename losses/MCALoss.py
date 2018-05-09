@@ -33,7 +33,7 @@ class MCALoss(nn.Module):
 
     def forward(self, inputs, targets):
         print('center is same or not \n?', self.centers[0][0])
-        centers_dist = pair_euclidean_dist(inputs, self.centers)
+        centers_dist = pair_euclidean_dist(inputs, normalize(self.centers))
         loss = []
         dist_ap = []
         # dist_an = []
