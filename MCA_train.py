@@ -88,7 +88,7 @@ def main(args):
     features = [feature.resize_(1, args.dim) for feature in features]
     features = torch.cat(features)
     features = features.numpy()
-    labels = np.array(labels)
+    # labels = np.array(labels)
 
     centers, center_labels = cluster_(features, labels, n_clusters=3)
     centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
