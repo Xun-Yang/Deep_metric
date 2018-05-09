@@ -92,8 +92,9 @@ def main(args):
 
     centers, center_labels = cluster_(features, labels, n_clusters=3)
     print(type(center_labels))
-    center_labels = [l for l in center_labels]
+    # center_labels = [l for l in center_labels]
     centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
+    print('#### type #### is', type(center_labels[0]))
     print('##### requires grad is True? ##### \n', centers.requires_grad)
     center_labels = Variable(torch.LongTensor(center_labels)).cuda()
 
