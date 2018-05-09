@@ -8,7 +8,8 @@ from torch.backends import cudnn
 from torch.autograd import Variable
 import models
 import losses
-from utils import RandomIdentitySampler, mkdir_if_missing, logging, display, orth_reg
+from utils import RandomIdentitySampler, mkdir_if_missing, logging, display, orth_reg, cluster_
+from evaluations import extract_features
 import DataSet
 import numpy as np
 cudnn.benchmark = True
@@ -71,16 +72,32 @@ def main(args):
     optimizer = torch.optim.Adam(param_groups, lr=args.lr,
                                  weight_decay=args.weight_decay)
 
-    if args.loss == 'center-nca':
-        criterion = losses.create(args.loss, alpha=args.alpha).cuda()
-    elif args.loss == 'cluster-nca':
-        criterion = losses.create(args.loss, alpha=args.alpha, beta=args.beta).cuda()
-    elif args.loss == 'neighbour':
-        criterion = losses.create(args.loss, k=args.k, margin=args.margin).cuda()
-    else:
-        criterion = losses.create(args.loss, alpha=args.alpha, k=args.k).cuda()
-
     data = DataSet.create(args.data, root=None, test=False)
+
+    # compute the cluster centers for each class here
+
+    def normalize(x):
+        norm = x.norm(dim=1, p=2, keepdim=True)
+        x = x.div(norm.expand_as(x))
+        return x
+
+    data_loader = torch.utils.data.DataLoader(
+        data.train, batch_size=8, shuffle=False, drop_last=False)
+
+    features, labels = extract_features(model, data_loader, print_freq=32, metric=None)
+    features = [feature.resize_(1, args.dim) for feature in features]
+    features = torch.cat(features)
+    features = features.numpy()
+    labels = np.array(labels)
+
+    centers, center_labels = cluster_(features, labels, n_clusters=3)
+    centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
+    print('##### requires grad is True? ##### \n', centers.requires_grad)
+    center_labels = Variable(torch.LongTensor(center_labels)).cuda()
+
+    criterion = losses.create(args.loss, alpha=args.alpha,
+                              centers=centers, center_labels=center_labels).cuda()
+
     train_loader = torch.utils.data.DataLoader(
         data.train, batch_size=args.BatchSize,
         sampler=RandomIdentitySampler(data.train, num_instances=args.num_instances),
@@ -106,16 +123,19 @@ def main(args):
 
             # type of labels is Variable cuda.Longtensor
             labels = Variable(labels).cuda()
-
             optimizer.zero_grad()
-
+            # centers.zero_grad()
             embed_feat = model(inputs)
 
+            # update network weight
             loss, inter_, dist_ap, dist_an = criterion(embed_feat, labels)
-            if args.orth > 0:
-                loss = orth_reg(model, loss, cof=args.orth)
             loss.backward()
             optimizer.step()
+
+            # update centers
+            centers.data -= args.lr*centers.grad.data
+            centers.data = normalize(centers.data)
+            centers.grad.zero_()
 
             running_loss += loss.data[0]
             running_neg += dist_an

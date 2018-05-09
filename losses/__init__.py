@@ -31,6 +31,7 @@ from .A_hard_pair import AHardPair
 from .Grad_NCA import Grad_NCA
 from .CenterNCALoss import CenterNCALoss
 from .ClusterNCALoss import ClusterNCALoss
+from .MCALoss import MCALoss
 
 __factory = {
     'softneig': SoftmaxNeigLoss,
@@ -61,6 +62,7 @@ __factory = {
     'Grad_nca': Grad_NCA,
     'center-nca': CenterNCALoss,
     'cluster-nca': ClusterNCALoss,
+    'mca': MCALoss,
 }
 
 
