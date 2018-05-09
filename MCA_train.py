@@ -139,7 +139,7 @@ def main(args):
             optimizer.step()
 
             # update centers
-            centers.data -= args.lr*centers.grad.data
+            centers.data -= centers.grad.data
             centers.data = normalize(centers.data)
             centers.grad.data.zero_()
 
