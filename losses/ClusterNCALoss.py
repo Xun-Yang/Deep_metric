@@ -94,7 +94,6 @@ class ClusterNCALoss(nn.Module):
         # centers = centers.detach()
 
         centers_dist = pair_euclidean_dist(inputs, centers)*cluster_mat
-
         loss = []
         dist_ap = []
         dist_an = []

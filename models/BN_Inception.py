@@ -233,7 +233,7 @@ class BNInception(nn.Module):
         if self.Embed_dim == 0:
             pass
         else:
-            self.Embed = Embedding(1024, self.Embed_dim)
+            self.Embed = Embedding(1024, self.Embed_dim, normalized=False)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
