@@ -19,14 +19,14 @@ def pair_euclidean_dist(inputs_x, inputs_y):
 
 
 class MCALoss(nn.Module):
-    def __init__(self, alpha=16, centers=None, center_labels=None, cluster_counter=None):
+    def __init__(self, alpha=16, centers=None, cluster_counter=None, center_labels=None):
         super(MCALoss, self).__init__()
         self.alpha = alpha
         self.centers = centers
         self.center_labels = center_labels
         self.cluster_counter = cluster_counter
 
-    def forward(self, inputs, targets):
+    def forward(self, inputs, targets, _mask):
         # print('center is same or not \n?', self.centers[0][0])
         centers_dist = pair_euclidean_dist(inputs, self.centers)
         loss = []
@@ -37,8 +37,10 @@ class MCALoss(nn.Module):
             # for computation stability
             dist = centers_dist[i]
             pos_pair_mask = (self.center_labels == target)
+            # print(pos_pair_mask[:7])
             neg_pair_mask = (self.center_labels != target)
             pos_pair = torch.masked_select(dist, pos_pair_mask)
+            pos_pair = torch.masked_select(pos_pair, _mask[target.data[0]])
             neg_pair = torch.sort(torch.masked_select(dist, neg_pair_mask))
 
             # only consider neighbor negative clusters
@@ -80,23 +82,26 @@ def main():
     Batch = BatchGenerator(labels, num_instances=num_instances, batch_size=batch_size)
     batch = Batch.batch()
 
+    _mask = Variable(torch.ByteTensor(np.ones([100, 3])).cuda())
     inputs = Variable(torch.FloatTensor(features[batch, :])).cuda()
     targets = Variable(torch.LongTensor(labels[batch])).cuda()
     # print(torch.mean(inputs))
     mca = MCALoss(alpha=16, centers=centers,
                   center_labels=center_labels, cluster_counter=cluster_counter)
-    for i in range(1):
+    for i in range(2):
         # loss, accuracy, dist_ap, dist_an =
             # MCALoss(alpha=16, centers=centers, center_labels=center_labels)(inputs, targets)
         loss, accuracy, dist_ap, dist_an = \
-            mca(inputs, targets)
+            mca(inputs, targets, _mask)
         # print(loss.data[0])
         loss.backward()
         # print(centers.grad.data)
         centers.data -= centers.grad.data
         centers.grad.data.zero_()
         # print(centers.grad)
+
     print(cluster_counter)
+
 
 if __name__ == '__main__':
     main()

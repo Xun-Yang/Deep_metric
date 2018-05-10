@@ -111,6 +111,8 @@ def main(args):
     pos_list = list()
     neg_list = list()
 
+    _mask = Variable(torch.ByteTensor(np.ones([num_class_dict[args.data], args.n_cluster])).cuda())
+
     for epoch in range(args.start, args.epochs):
         epoch_list.append(epoch)
 
@@ -131,7 +133,7 @@ def main(args):
             embed_feat = model(inputs)
 
             # update network weight
-            loss, inter_, dist_ap, dist_an = criterion(embed_feat, labels)
+            loss, inter_, dist_ap, dist_an = criterion(embed_feat, labels, _mask)
             loss.backward()
             optimizer.step()
 
@@ -157,6 +159,10 @@ def main(args):
         loss_list.append(running_loss)
         pos_list.append(running_pos / i)
         neg_list.append(running_neg / i)
+        # update the _mask to make the cluster with only 1 or no member to be silent
+        _mask = Variable(torch.FloatTensor(cluster_counter) < 2).cuda()
+        cluster_distribution = torch.sum(_mask, 1).cpu().numpy().tolist()
+        print(cluster_distribution)
         #
         # print('[Epoch %05d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
         #       % (epoch + 1, running_loss, inter_, dist_ap, dist_an))
