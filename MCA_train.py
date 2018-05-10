@@ -53,32 +53,13 @@ def main(args):
 
     model = model.cuda()
 
-    torch.save(model, os.path.join(log_dir, 'model.pkl'))
-    print('initial model is save at %s' % log_dir)
-
-    # fine tune the model: the learning rate for pre-trained parameter is 1/10
-    new_param_ids = set(map(id, model.Embed.parameters()))
-
-    new_params = [p for p in model.parameters() if
-                  id(p) in new_param_ids]
-
-    base_params = [p for p in model.parameters() if
-                   id(p) not in new_param_ids]
-    param_groups = [
-                {'params': base_params, 'lr_mult': 0.1},
-                {'params': new_params, 'lr_mult': 1.0}]
-
-    optimizer = torch.optim.Adam(param_groups, lr=args.lr,
-                                 weight_decay=args.weight_decay)
-
-    data = DataSet.create(args.data, root=None, test=False)
-
     # compute the cluster centers for each class here
 
     def normalize(x):
         norm = x.norm(dim=1, p=2, keepdim=True)
         x = x.div(norm.expand_as(x))
         return x
+    data = DataSet.create(args.data, root=None, test=False)
 
     data_loader = torch.utils.data.DataLoader(
         data.train, batch_size=args.BatchSize, shuffle=False, drop_last=False)
@@ -95,6 +76,25 @@ def main(args):
     centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
     center_labels = Variable(torch.LongTensor(center_labels)).cuda()
     print(40*'#', '\n Clustering Done')
+
+    torch.save(model, os.path.join(log_dir, 'model.pkl'))
+    print('initial model is save at %s' % log_dir)
+
+    # fine tune the model: the learning rate for pre-trained parameter is 1/10
+    new_param_ids = set(map(id, model.Embed.parameters()))
+
+    new_params = [p for p in model.parameters() if
+                  id(p) in new_param_ids]
+
+    base_params = [p for p in model.parameters() if
+                   id(p) not in new_param_ids]
+    param_groups = [
+                {'params': base_params, 'lr_mult': 0.1},
+                {'params': new_params, 'lr_mult': 1.0},
+                {'params': centers, 'lr_mult': 0.1}]
+
+    optimizer = torch.optim.Adam(param_groups, lr=args.lr,
+                                 weight_decay=args.weight_decay)
 
     criterion = losses.create(args.loss, alpha=args.alpha,
                               centers=centers, center_labels=center_labels).cuda()
@@ -135,9 +135,9 @@ def main(args):
             # update centers
             if np.random.randint(64) == 1:
                 print(40*'#', torch.mean(torch.abs(centers.grad.data)))
-            centers.data -= args.lr*centers.grad.data
-            centers.data = normalize(centers.data)
-            centers.grad.data.zero_()
+            # centers.data -= args.lr*centers.grad.data
+            # centers.data = normalize(centers.data)
+            # centers.grad.data.zero_()
 
             running_loss += loss.data[0]
             running_neg += dist_an
