@@ -28,11 +28,11 @@ name = temp[-1][:-10]
 if args.test == 1:
     data = DataSet.create(args.data, train=False)
     data_loader = torch.utils.data.DataLoader(
-        data.test, batch_size=8, shuffle=False, drop_last=False)
+        data.test, batch_size=128, shuffle=False, drop_last=False)
 else:
     data = DataSet.create(args.data, test=False)
     data_loader = torch.utils.data.DataLoader(
-        data.train, batch_size=8, shuffle=False, drop_last=False)
+        data.train, batch_size=128, shuffle=False, drop_last=False)
 
 features, labels = extract_features(model, data_loader, print_freq=1e5, metric=None)
 
