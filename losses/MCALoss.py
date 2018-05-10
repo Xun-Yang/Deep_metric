@@ -36,18 +36,24 @@ class MCALoss(nn.Module):
         for i, target in enumerate(targets):
             # for computation stability
             dist = centers_dist[i]
+
             pos_pair_mask = (self.center_labels == target)
             # print(pos_pair_mask[:7])
             neg_pair_mask = (self.center_labels != target)
+
             pos_pair = torch.masked_select(dist, pos_pair_mask)
+
+            # count the closest cluster
+            pos_idx = torch.sort(pos_pair)[1][0].data[0]
+            self.cluster_counter[target.data[0]][pos_idx] += 1
+
+            # delete the dead cluster
             pos_pair = torch.masked_select(pos_pair, _mask[target.data[0]])
             neg_pair = torch.sort(torch.masked_select(dist, neg_pair_mask))
 
             # only consider neighbor negative clusters
             neg_pair = neg_pair[0][:32]
-            pos_idx = torch.sort(pos_pair)[1][0].data[0]
-            # print(pos_idx)
-            self.cluster_counter[target.data[0]][pos_idx] += 1
+
             # if i == 1:
             #     print(neg_pair)
 

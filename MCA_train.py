@@ -165,6 +165,7 @@ def main(args):
         _mask = Variable(torch.FloatTensor(cluster_counter) > 1).cuda()
         cluster_distribution = torch.sum(_mask, 1).cpu().data.numpy().tolist()
         print(cluster_distribution)
+        print(_mask)
         #
         # print('[Epoch %05d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
         #       % (epoch + 1, running_loss, inter_, dist_ap, dist_an))
