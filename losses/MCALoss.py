@@ -82,6 +82,7 @@ def main():
     Batch = BatchGenerator(labels, num_instances=num_instances, batch_size=batch_size)
     batch = Batch.batch()
 
+    # _mask = Variable(torch.ByteTensor(np.ones([num_class_dict[args.data], args.n_cluster])).cuda())
     _mask = Variable(torch.ByteTensor(np.ones([100, 3])).cuda())
     inputs = Variable(torch.FloatTensor(features[batch, :])).cuda()
     targets = Variable(torch.LongTensor(labels[batch])).cuda()

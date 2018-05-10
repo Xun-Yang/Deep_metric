@@ -16,7 +16,7 @@ cudnn.benchmark = True
 
 
 def main(args):
-    num_class_dict = {'cub': 100, 'car': 96}
+    num_class_dict = {'cub': 100, 'car': 98}
     #  训练日志保存
     log_dir = os.path.join(args.checkpoints, args.log_dir)
     mkdir_if_missing(log_dir)
@@ -111,7 +111,9 @@ def main(args):
     pos_list = list()
     neg_list = list()
 
-    _mask = Variable(torch.ByteTensor(np.ones([num_class_dict[args.data], args.n_cluster])).cuda())
+    # _mask = Variable(torch.ByteTensor(np.ones([2, 4]))).cuda()
+
+    _mask = Variable(torch.ByteTensor(np.ones([int(num_class_dict[args.data]), args.n_cluster]))).cuda()
 
     for epoch in range(args.start, args.epochs):
         epoch_list.append(epoch)
@@ -161,7 +163,7 @@ def main(args):
         neg_list.append(running_neg / i)
         # update the _mask to make the cluster with only 1 or no member to be silent
         _mask = Variable(torch.FloatTensor(cluster_counter) < 2).cuda()
-        cluster_distribution = torch.sum(_mask, 1).cpu().numpy().tolist()
+        cluster_distribution = torch.sum(_mask, 1).cpu().data.numpy().tolist()
         print(cluster_distribution)
         #
         # print('[Epoch %05d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
