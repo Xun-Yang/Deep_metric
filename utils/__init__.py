@@ -8,6 +8,7 @@ from .str2nums import chars2nums
 from .HyperparamterDisplay import display
 from .Batch_generator import BatchGenerator
 from .cluster import cluster_
+from .numpy_tozero import to_zero
 
 def to_numpy(tensor):
     if torch.is_tensor(tensor):

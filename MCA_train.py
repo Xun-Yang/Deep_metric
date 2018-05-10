@@ -8,7 +8,7 @@ from torch.backends import cudnn
 from torch.autograd import Variable
 import models
 import losses
-from utils import mkdir_if_missing, logging, display, cluster_
+from utils import mkdir_if_missing, logging, display, cluster_, to_zero
 from evaluations import extract_features
 import DataSet
 import numpy as np
@@ -16,6 +16,7 @@ cudnn.benchmark = True
 
 
 def main(args):
+    num_class_dict = {'cub': 100, 'car': 96}
     #  训练日志保存
     log_dir = os.path.join(args.checkpoints, args.log_dir)
     mkdir_if_missing(log_dir)
@@ -96,8 +97,9 @@ def main(args):
     optimizer = torch.optim.Adam(param_groups, lr=args.lr,
                                  weight_decay=args.weight_decay)
 
-    criterion = losses.create(args.loss, alpha=args.alpha,
-                              centers=centers, center_labels=center_labels).cuda()
+    cluster_counter = np.zeros([num_class_dict[args.data], args.n_cluster])
+    criterion = losses.create(args.loss, alpha=args.alpha, centers=centers,
+                              center_labels=center_labels, cluster_counter=cluster_counter).cuda()
 
     # random sampling to generate mini-batch
     train_loader = torch.utils.data.DataLoader(
@@ -115,6 +117,7 @@ def main(args):
         running_loss = 0.0
         running_pos = 0.0
         running_neg = 0.0
+        to_zero(cluster_counter)
 
         for i, data in enumerate(train_loader, 0):
             inputs, labels = data
@@ -133,8 +136,8 @@ def main(args):
             optimizer.step()
 
             # update centers
-            if np.random.randint(64) == 1:
-                print(40*'#', torch.mean(torch.abs(centers.grad.data)))
+            # if np.random.randint(64) == 1:
+                # print(40*'#', torch.mean(torch.abs(centers.grad.data)))
             # centers.data -= args.lr*centers.grad.data
             centers.data = normalize(centers.data)
             # centers.grad.data.zero_()
@@ -149,7 +152,8 @@ def main(args):
             if i % 10 == 9:
                 print('[Epoch %05d Iteration %2d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
                       % (epoch + 1,  i+1, loss.data[0], inter_, dist_ap, dist_an))
-
+        # cluster number counter show here
+        print(cluster_counter)
         loss_list.append(running_loss)
         pos_list.append(running_pos / i)
         neg_list.append(running_neg / i)

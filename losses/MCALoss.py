@@ -18,18 +18,13 @@ def pair_euclidean_dist(inputs_x, inputs_y):
     return dist
 
 
-# def normalize(x):
-#     norm = x.norm(dim=1, p=2, keepdim=True)
-#     x = x.div(norm.expand_as(x))
-#     return x
-
-
 class MCALoss(nn.Module):
-    def __init__(self, alpha=16, centers=None, center_labels=None):
+    def __init__(self, alpha=16, centers=None, center_labels=None, cluster_counter=None):
         super(MCALoss, self).__init__()
         self.alpha = alpha
         self.centers = centers
         self.center_labels = center_labels
+        self.cluster_counter = cluster_counter
 
     def forward(self, inputs, targets):
         # print('center is same or not \n?', self.centers[0][0])
@@ -48,6 +43,9 @@ class MCALoss(nn.Module):
 
             # only consider neighbor negative clusters
             neg_pair = neg_pair[0][:32]
+            pos_idx = torch.sort(pos_pair)[1][0].data[0]
+            # print(pos_idx)
+            self.cluster_counter[target.data[0]][pos_idx] += 1
             # if i == 1:
             #     print(neg_pair)
 
@@ -76,7 +74,7 @@ def main():
     centers, center_labels = cluster_(features, labels, n_clusters=3)
     centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
     center_labels = Variable(torch.LongTensor(center_labels)).cuda()
-
+    cluster_counter = np.zeros([100, 3])
     num_instances = 3
     batch_size = 120
     Batch = BatchGenerator(labels, num_instances=num_instances, batch_size=batch_size)
@@ -85,7 +83,8 @@ def main():
     inputs = Variable(torch.FloatTensor(features[batch, :])).cuda()
     targets = Variable(torch.LongTensor(labels[batch])).cuda()
     # print(torch.mean(inputs))
-    mca = MCALoss(alpha=16, centers=centers, center_labels=center_labels)
+    mca = MCALoss(alpha=16, centers=centers,
+                  center_labels=center_labels, cluster_counter=cluster_counter)
     for i in range(1):
         # loss, accuracy, dist_ap, dist_an =
             # MCALoss(alpha=16, centers=centers, center_labels=center_labels)(inputs, targets)
@@ -97,6 +96,7 @@ def main():
         centers.data -= centers.grad.data
         centers.grad.data.zero_()
         # print(centers.grad)
+    print(cluster_counter)
 
 if __name__ == '__main__':
     main()
