@@ -112,8 +112,9 @@ def main(args):
     neg_list = list()
 
     # _mask = Variable(torch.ByteTensor(np.ones([2, 4]))).cuda()
-
-    _mask = Variable(torch.ByteTensor(np.ones([int(num_class_dict[args.data]), args.n_cluster]))).cuda()
+    dtype = torch.ByteTensor
+    _mask = torch.ones(int(num_class_dict[args.data]), args.n_cluster).type(dtype)
+    _mask = Variable(_mask).cuda()
 
     for epoch in range(args.start, args.epochs):
         epoch_list.append(epoch)
