@@ -162,7 +162,7 @@ def main(args):
         pos_list.append(running_pos / i)
         neg_list.append(running_neg / i)
         # update the _mask to make the cluster with only 1 or no member to be silent
-        _mask = Variable(torch.FloatTensor(cluster_counter) < 2).cuda()
+        _mask = Variable(torch.FloatTensor(cluster_counter) > 1).cuda()
         cluster_distribution = torch.sum(_mask, 1).cpu().data.numpy().tolist()
         print(cluster_distribution)
         #
