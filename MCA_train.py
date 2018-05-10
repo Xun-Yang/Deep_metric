@@ -136,7 +136,7 @@ def main(args):
             if np.random.randint(64) == 1:
                 print(40*'#', torch.mean(torch.abs(centers.grad.data)))
             # centers.data -= args.lr*centers.grad.data
-            # centers.data = normalize(centers.data)
+            centers.data = normalize(centers.data)
             # centers.grad.data.zero_()
 
             running_loss += loss.data[0]
