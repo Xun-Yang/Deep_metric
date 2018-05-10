@@ -42,15 +42,23 @@ class MCALoss(nn.Module):
             # for computation stability
             dist = centers_dist[i]
             pos_pair_mask = (self.center_labels == target)
+            neg_pair_mask = (self.center_labels != target)
             pos_pair = torch.masked_select(dist, pos_pair_mask)
+            neg_pair = torch.sort(torch.masked_select(dist, neg_pair_mask))
+
+            # only consider neighbor negative clusters
+            neg_pair = neg_pair[0][:32]
+            # if i == 1:
+            #     print(neg_pair)
+
             dist_ap.extend(pos_pair)
 
-            base = (torch.max(dist) + torch.min(dist)).data[0]/2
+            base = (torch.max(neg_pair) + torch.min(dist)).data[0]/2
             pos_exp = torch.sum(torch.exp(-self.alpha*(pos_pair - base)))
-            a_exp = torch.sum(torch.exp(-self.alpha*(dist - base)))
-            loss_ = - torch.log(pos_exp/a_exp)
+            neg_exp = torch.sum(torch.exp(-self.alpha*(neg_pair - base)))
+            loss_ = - torch.log(pos_exp/(pos_exp + neg_exp))
             loss.append(loss_)
-            if loss_.data[0] < 0.3:
+            if loss_.data[0] < 0.32:
                 num_match += 1
         loss = torch.mean(torch.cat(loss))
         # print(dist_an, dist_ap)
@@ -74,20 +82,20 @@ def main():
     Batch = BatchGenerator(labels, num_instances=num_instances, batch_size=batch_size)
     batch = Batch.batch()
 
-    inputs = Variable(torch.FloatTensord(features[batch, :])).cuda()
+    inputs = Variable(torch.FloatTensor(features[batch, :])).cuda()
     targets = Variable(torch.LongTensor(labels[batch])).cuda()
-    print(torch.mean(inputs))
+    # print(torch.mean(inputs))
     mca = MCALoss(alpha=16, centers=centers, center_labels=center_labels)
-    for i in range(10):
-        centers.grad.zero_()
+    for i in range(1):
         # loss, accuracy, dist_ap, dist_an =
             # MCALoss(alpha=16, centers=centers, center_labels=center_labels)(inputs, targets)
         loss, accuracy, dist_ap, dist_an = \
             mca(inputs, targets)
-        print(loss.data[0])
+        # print(loss.data[0])
         loss.backward()
-        print(centers.grad.data)
+        # print(centers.grad.data)
         centers.data -= centers.grad.data
+        centers.grad.data.zero_()
         # print(centers.grad)
 
 if __name__ == '__main__':
