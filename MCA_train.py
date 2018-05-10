@@ -70,7 +70,7 @@ def main(args):
     features = features.numpy()
     labels = np.array(labels)
 
-    centers, center_labels = cluster_(features, labels, n_clusters=3)
+    centers, center_labels = cluster_(features, labels, n_clusters=args.n_cluster)
     center_labels = [int(center_label) for center_label in center_labels]
 
     centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
@@ -91,7 +91,7 @@ def main(args):
     param_groups = [
                 {'params': base_params, 'lr_mult': 0.1},
                 {'params': new_params, 'lr_mult': 1.0},
-                {'params': centers, 'lr_mult': 0.1}]
+                {'params': centers, 'lr_mult': 1.0}]
 
     optimizer = torch.optim.Adam(param_groups, lr=args.lr,
                                  weight_decay=args.weight_decay)
@@ -179,8 +179,8 @@ if __name__ == '__main__':
                         help='hyper parameter in some deep metric loss functions')
     parser.add_argument('-k', default=16, type=int, metavar='n',
                         help='number of neighbour points in KNN')
-    parser.add_argument('-n_cluster', default=25, type=int, metavar='n',
-                        help='number of clusters on mini-batch')
+    parser.add_argument('-n_cluster', default=3, type=int, metavar='n',
+                        help='number of clusters for every class')
     parser.add_argument('-margin', default=0.1, type=float,
                         help='margin in loss function')
     parser.add_argument('-init', default='random',
