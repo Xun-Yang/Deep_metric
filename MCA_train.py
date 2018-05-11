@@ -86,10 +86,10 @@ def main(args):
         print(type(args.n_cluster))
 
         center_labels = int(args.n_cluster) * list(range(num_class_dict[args.data]))
-        center_labels = Variable(torch.LongTensor(center_labels).cuda(), requires_grad=True)
+        center_labels = Variable(torch.LongTensor(center_labels).cuda())
 
         centers = normalize(torch.rand(args.n_cluster*args.n_cluster, args.dim))
-        centers = Variable(centers).cuda()
+        centers = Variable(centers.cuda(), requires_grad=True)
 
     torch.save(model, os.path.join(log_dir, 'model.pkl'))
     print('initial model is save at %s' % log_dir)
