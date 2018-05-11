@@ -84,8 +84,8 @@ def main(args):
 
         print(range(num_class_dict[args.data]))
         print(type(args.n_cluster))
-        
-        center_labels = int(args.n_cluster) * range(num_class_dict[args.data])
+
+        center_labels = int(args.n_cluster) * list(range(num_class_dict[args.data]))
         center_labels = Variable(torch.LongTensor(center_labels)).cuda()
 
         centers = normalize(torch.rand(args.n_cluster*args.n_cluster, args.dim))
