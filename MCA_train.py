@@ -16,7 +16,7 @@ cudnn.benchmark = True
 
 
 def main(args):
-    num_class_dict = {'cub': 100, 'car': 98}
+    num_class_dict = {'cub': int(100), 'car': int(98)}
     #  训练日志保存
     log_dir = os.path.join(args.checkpoints, args.log_dir)
     mkdir_if_missing(log_dir)
