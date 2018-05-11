@@ -37,6 +37,7 @@ class MCALoss(nn.Module):
             dist = centers_dist[i]
 
             pos_pair_mask = (self.center_labels == target)
+            print(dist.shape)
             print(pos_pair_mask)
             # print(pos_pair_mask[:7])
             neg_pair_mask = (self.center_labels != target)
