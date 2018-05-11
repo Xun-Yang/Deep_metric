@@ -60,23 +60,32 @@ def main(args):
         norm = x.norm(dim=1, p=2, keepdim=True)
         x = x.div(norm.expand_as(x))
         return x
+
     data = DataSet.create(args.data, root=None, test=False)
 
-    data_loader = torch.utils.data.DataLoader(
-        data.train, batch_size=args.BatchSize, shuffle=False, drop_last=False)
+    if args.center_init == 'cluster':
+        data_loader = torch.utils.data.DataLoader(
+            data.train, batch_size=args.BatchSize, shuffle=False, drop_last=False)
 
-    features, labels = extract_features(model, data_loader, print_freq=32, metric=None)
-    features = [feature.resize_(1, args.dim) for feature in features]
-    features = torch.cat(features)
-    features = features.numpy()
-    labels = np.array(labels)
+        features, labels = extract_features(model, data_loader, print_freq=32, metric=None)
+        features = [feature.resize_(1, args.dim) for feature in features]
+        features = torch.cat(features)
+        features = features.numpy()
+        labels = np.array(labels)
 
-    centers, center_labels = cluster_(features, labels, n_clusters=args.n_cluster)
-    center_labels = [int(center_label) for center_label in center_labels]
+        centers, center_labels = cluster_(features, labels, n_clusters=args.n_cluster)
+        center_labels = [int(center_label) for center_label in center_labels]
 
-    centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
-    center_labels = Variable(torch.LongTensor(center_labels)).cuda()
-    print(40*'#', '\n Clustering Done')
+        centers = Variable(torch.FloatTensor(centers).cuda(),  requires_grad=True)
+        center_labels = Variable(torch.LongTensor(center_labels)).cuda()
+        print(40*'#', '\n Clustering Done')
+
+    else:
+        center_labels = args.n_cluster*range(num_class_dict[args.data])
+        center_labels = Variable(torch.LongTensor(center_labels)).cuda()
+
+        centers = normalize(torch.rand(args.n_cluster*args.n_cluster, args.dim))
+        centers = Variable(centers).cuda()
 
     torch.save(model, os.path.join(log_dir, 'model.pkl'))
     print('initial model is save at %s' % log_dir)
@@ -140,12 +149,7 @@ def main(args):
             loss.backward()
             optimizer.step()
 
-            # update centers
-            # if np.random.randint(64) == 1:
-                # print(40*'#', torch.mean(torch.abs(centers.grad.data)))
-            # centers.data -= args.lr*centers.grad.data
             centers.data = normalize(centers.data)
-            # centers.grad.data.zero_()
 
             running_loss += loss.data[0]
             running_neg += dist_an
@@ -163,11 +167,9 @@ def main(args):
         pos_list.append(running_pos / i)
         neg_list.append(running_neg / i)
         # update the _mask to make the cluster with only 1 or no member to be silent
-        _mask = Variable(torch.FloatTensor(cluster_counter) > 1).cuda()
-        cluster_distribution = torch.sum(_mask, 1).cpu().data.numpy().tolist()
-        print(cluster_distribution)
-        print(_mask)
-        #
+        # _mask = Variable(torch.FloatTensor(cluster_counter) > 1).cuda()
+        # cluster_distribution = torch.sum(_mask, 1).cpu().data.numpy().tolist()
+        # print(cluster_distribution)
         # print('[Epoch %05d]\t Loss: %.3f \t Accuracy: %.3f \t Pos-Dist: %.3f \t Neg-Dist: %.3f'
         #       % (epoch + 1, running_loss, inter_, dist_ap, dist_an))
 
@@ -197,6 +199,8 @@ if __name__ == '__main__':
                         help='number of clusters for every class')
     parser.add_argument('-margin', default=0.1, type=float,
                         help='margin in loss function')
+    parser.add_argument('-center_init', default='cluster', type=str,
+                        help='to init the prototype point randomly or via clustering')
     parser.add_argument('-init', default='random',
                         help='the initialization way of FC layer')
     parser.add_argument('-orth', default=0, type=float,

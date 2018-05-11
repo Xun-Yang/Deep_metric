@@ -27,7 +27,6 @@ class MCALoss(nn.Module):
         self.cluster_counter = cluster_counter
 
     def forward(self, inputs, targets, _mask):
-        # print('center is same or not \n?', self.centers[0][0])
         centers_dist = pair_euclidean_dist(inputs, self.centers)
         loss = []
         dist_ap = []
