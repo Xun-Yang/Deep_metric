@@ -140,7 +140,7 @@ For the pretrained model of Inception-BN transferred from Caffe can only work no
 I change to use VGG-16-BN as GML:
 [<<Generalization in Metric Learning: Should the Embedding Layer be the Embedding Layer?>>](https://arxiv.org/abs/1803.03310)
 
-The network structure is exactly the same as GML, and I have reimplement the performance of the paper with a much more stable 
+The network structure is exactly the same as GML, and I have reimplement the performance of the paper with different 
 loss function.
 
 # The New repository is at https://github.com/bnulihaixia/VGG_dml
