@@ -95,6 +95,14 @@ Please create an env as follows:
 - [PyTorch](http://pytorch.org)  : (0.2.03)
 (I have tried 0.3.0 and 0.1.0,  performance is lower than 0.2.03 by 10% on rank@1)
 
+#### Another Attention!!
+If you are not required to used inception-BN as your pretrained model, you can go to The New repository is at https://github.com/bnulihaixia/VGG_dml. 
+
+Performance is similar as inception with 2/3 batchsize, and much faster training speed.
+
+which can work normally on pytorch 0.4.0(the most recent stable version)
+
+And I wil do new experiments in the new repository instead of this old repository in the future. This reposity wil not be updated any more.
 
 ## Performance of Loss:
 
@@ -110,17 +118,11 @@ If you have finetuned the model to have better performance than below, please te
 |Pool5-256dim L2|47.0|
 |Pool5-128dim L2|42.0|
 |Pool5-64dim L2|32.0|
-|Contrastive Loss||
-|NeighbourHardLoss||
-|NeighbourLoss||
-|||
-|BinDeviance Loss|51.3|
-|HistogramLoss| |
-|DistWeightDeviance Loss|51.6|
-|SoftmaxNeig Loss|56.3|
-|NCA Loss|60.7|
+|BinDeviance Loss|63.3|
+|NCA Loss|65.1|
 
 Pool5-512(64, 128, 256)dim L2 means the feature is transformed from Pool5 via a orthogonal transform.
+# Via some data precessing, Result is much better now.
 
 ## Reproducing Car-196 (or CUB-200-2011) experiments
 
@@ -132,10 +134,16 @@ sh run_train_00.sh
 
 To reproduce other experiments, you can edit the run_train.sh file by yourself.
 
-Notice:
-the train.py should be modified a little when you used other loss functions.
-I will address the problem in these days.
+## Notice!!!:
+For the pretrained model of Inception-BN transferred from Caffe can only work normally on torch 0.2.0
 
+I change to use VGG-16-BN as GML:
+[<<Generalization in Metric Learning: Should the Embedding Layer be the Embedding Layer?>>](https://arxiv.org/abs/1803.03310)
+
+The network structure is exactly the same as GML, and I have reimplement the performance of the paper with a much more stable 
+loss function.
+
+# The New repository is at https://github.com/bnulihaixia/VGG_dml
 
 ## tSNE visualization on CUB-200
 ![image](https://github.com/bnulihaixia/Deep_metric/blob/master/Vision/tsne-cub.jpg)
