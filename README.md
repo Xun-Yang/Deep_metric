@@ -96,13 +96,13 @@ Please create an env as follows:
 (I have tried 0.3.0 and 0.1.0,  performance is lower than 0.2.03 by 10% on rank@1)
 
 #### Another Attention!!
-If you are not required to used inception-BN as your pretrained model, you can go to The New repository is at https://github.com/bnulihaixia/VGG_dml. 
+If you are not required to used inception-BN as your pretrained model, you better use my New repository is at https://github.com/bnulihaixia/VGG_dml. 
 
 Performance is similar as inception with 2/3 batchsize, and much faster training speed.
 
 which can work normally on pytorch 0.4.0(the most recent stable version)
 
-And I wil do new experiments in the new repository instead of this old repository in the future. This reposity wil not be updated any more.
+And I will do experiments on the new repository in the future. This reposity wil not be updated any more.
 
 ## Performance of Loss:
 
@@ -122,7 +122,7 @@ If you have finetuned the model to have better performance than below, please te
 |NCA Loss|65.1|
 
 Pool5-512(64, 128, 256)dim L2 means the feature is transformed from Pool5 via a orthogonal transform.
-# Via some data precessing, Result is much better now.
+### Via some data precessing, Result is much better now.
 
 ## Reproducing Car-196 (or CUB-200-2011) experiments
 
